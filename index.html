@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bugün nə öyrənim? — Hər gün bir konsept, hər gün bir addım</title>
+<meta name="description" content="Hər gün 2-3 dəqiqəyə iqtisadiyyat, psixologiya, tarix, texnologiya və iş dünyasından bir konsept öyrən.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BNÖ">
+<meta name="theme-color" content="#E07B39">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="96x96"  href="icons/icon-96.png">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Bugün nə öyrənim?">
+<meta property="og:description" content="Hər gün bir konsept. İqtisadiyyat, psixologiya, tarix, texnologiya.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════ */
+:root {
+  --bg:        #F7F4EE;
+  --bg2:       #F0EDE5;
+  --surface:   #FFFFFF;
+  --ink:       #1C1917;
+  --ink-2:     #57534E;
+  --ink-3:     #A8A29E;
+  --accent:    #E07B39;
+  --accent-lt: #FDF0E6;
+  --accent-dk: #C4621C;
+  --border:    #E7E3DC;
+  --correct:   #2D6A4F;
+  --wrong:     #C0392B;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Outfit', sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --r: 20px;
+}
+
+/* ═══════════════════════════════════
+   RESET
+═══════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+button { cursor: pointer; font-family: var(--sans); border: none; background: none; }
+ul { list-style: none; }
+input { font-family: var(--sans); }
+a { text-decoration: none; color: inherit; }
+
+/* Grain overlay */
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════ */
+.progress-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 201; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #f5a623); width: 0%; transition: width .5s var(--ease-out); }
+
+/* ═══════════════════════════════════
+   HEADER
+═══════════════════════════════════ */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 40px; border-bottom: 1px solid var(--border);
+  background: rgba(247,244,238,0.92); position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px); gap: 16px;
+}
+.logo {
+  font-family: var(--serif); font-size: 1.2rem; font-weight: 600;
+  letter-spacing: -.01em; display: flex; align-items: center; gap: 10px;
+  white-space: nowrap; cursor: pointer;
+}
+.logo-pip {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  animation: breathe 2.4s ease-in-out infinite; flex-shrink: 0;
+}
+@keyframes breathe { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.6);opacity:.5} }
+
+.header-nav { display: flex; align-items: center; gap: 6px; }
+.nav-btn {
+  padding: 7px 14px; border-radius: 100px; font-size: .78rem; font-weight: 500;
+  color: var(--ink-2); transition: background .2s, color .2s; letter-spacing: .01em;
+}
+.nav-btn:hover, .nav-btn.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.nav-btn.active { color: var(--accent); }
+
+.search-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); display: flex; align-items: center; justify-content: center;
+  color: var(--ink-2); transition: all .2s;
+}
+.search-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ═══════════════════════════════════
+   STREAK BAR
+═══════════════════════════════════ */
+.streak-bar {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: 20px; padding: 10px 40px; background: var(--surface); border-bottom: 1px solid var(--border);
+  font-size: .8rem; color: var(--ink-2);
+}
+.streak-item { display: flex; align-items: center; gap: 7px; }
+.streak-flame { font-size: 1.2rem; }
+.streak-count { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; color: var(--ink); }
+.streak-label { font-size: .7rem; color: var(--ink-3); }
+.xp-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.xp-bar-bg { width: 100px; height: 5px; background: var(--border); border-radius: 10px; overflow: hidden; }
+.xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #f5a623); border-radius: 10px; transition: width .6s var(--ease-out); }
+.level-badge { font-size: .68rem; font-weight: 600; color: var(--accent); background: var(--accent-lt); border-radius: 100px; padding: 2px 9px; letter-spacing: .02em; }
+.week-dots { display: flex; gap: 5px; align-items: center; }
+.week-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background .3s; }
+.week-dot.filled { background: var(--accent); }
+.week-dot.today { background: var(--accent); box-shadow: 0 0 0 2px var(--accent-lt); }
+
+/* ═══════════════════════════════════
+   VIEWS (PAGES)
+═══════════════════════════════════ */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ═══════════════════════════════════
+   HOME VIEW
+═══════════════════════════════════ */
+.hero { text-align: center; padding: 64px 24px 40px; opacity: 0; transform: translateY(18px); animation: rise .7s var(--ease-out) .1s forwards; }
+@keyframes rise { to { opacity: 1; transform: translateY(0); } }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .7rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.hero-eyebrow::before, .hero-eyebrow::after { content:''; display:block; width:24px; height:1px; background:var(--accent); opacity:.5; }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 700; line-height: 1.05; letter-spacing: -.04em; }
+.hero h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
+.hero-sub { margin: 14px auto 0; max-width: 420px; font-size: .93rem; color: var(--ink-2); line-height: 1.7; font-weight: 300; }
+
+.card-wrap { max-width: 720px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ═══════════════════════════════════
+   CONCEPT CARD
+═══════════════════════════════════ */
+.concept-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 48px 48px 40px; position: relative; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 32px rgba(0,0,0,.05);
+  transition: opacity .35s var(--ease-out), transform .35s var(--ease-out);
+}
+.concept-card.exit { opacity:0; transform:translateY(-16px) scale(.98); }
+.concept-card.enter { opacity:0; transform:translateY(20px) scale(.99); }
+.concept-card.visible { opacity:1; transform:translateY(0) scale(1); }
+.card-num { position:absolute; top:-20px; right:24px; font-family:var(--serif); font-size:9rem; font-weight:700; color:var(--ink); opacity:.04; line-height:1; pointer-events:none; user-select:none; }
+
+.card-actions-top { position:absolute; top:20px; right:20px; display:flex; gap:8px; }
+.icon-btn { width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:.9rem; transition:all .2s; }
+.icon-btn:hover { border-color:var(--accent); background:var(--accent-lt); }
+.icon-btn.bookmarked { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+.card-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+.tag { font-size:.65rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:3px 10px; border-radius:100px; border:1.5px solid; }
+.tag-econ   { color:#92400E; border-color:#FDE68A; background:#FFFBEB; }
+.tag-psych  { color:#1E40AF; border-color:#BFDBFE; background:#EFF6FF; }
+.tag-hist   { color:#7C3AED; border-color:#DDD6FE; background:#F5F3FF; }
+.tag-tech   { color:#065F46; border-color:#A7F3D0; background:#ECFDF5; }
+.tag-gen    { color:#9D174D; border-color:#FBCFE8; background:#FDF2F8; }
+.tag-biz    { color:#1E3A5F; border-color:#BAE6FD; background:#F0F9FF; }
+.tag-min    { color:#3B1F0A; border-color:var(--border); background:var(--accent-lt); }
+.tag-sci    { color:#14532D; border-color:#BBF7D0; background:#F0FFF4; }
+.tag-phil   { color:#4A1D96; border-color:#C4B5FD; background:#FAF5FF; }
+
+.concept-title { font-family:var(--serif); font-size:clamp(1.9rem,4vw,2.8rem); font-weight:700; line-height:1.1; letter-spacing:-.035em; margin-bottom:5px; }
+.concept-subtitle { font-family:var(--serif); font-size:1.1rem; font-weight:300; font-style:italic; color:var(--ink-2); margin-bottom:26px; }
+
+.divider { height:1px; background:var(--border); margin:24px 0; }
+.section-label { font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.explanation { font-size:1.02rem; color:var(--ink-2); line-height:1.82; font-weight:300; }
+.explanation strong { color:var(--ink); font-weight:600; }
+
+.example-box { background:var(--accent-lt); border-left:3px solid var(--accent); border-radius:0 10px 10px 0; padding:16px 20px; margin-top:12px; }
+.example-box p { font-size:.93rem; color:var(--ink-2); line-height:1.72; font-weight:300; }
+.example-box p strong { color:var(--ink); font-weight:600; }
+
+.insight-pill { display:flex; align-items:flex-start; gap:10px; background:var(--ink); color:#f5f0e8; border-radius:12px; padding:16px 20px; margin-top:12px; width:100%; }
+.insight-icon { font-size:1rem; flex-shrink:0; margin-top:2px; }
+.insight-text { font-size:.87rem; line-height:1.65; font-weight:300; }
+.insight-text strong { font-weight:600; color:#fff; }
+
+/* ═══════════════════════════════════
+   QUIZ
+═══════════════════════════════════ */
+.quiz-question { font-size:1rem; font-weight:500; line-height:1.55; margin-bottom:14px; }
+.quiz-options { display:flex; flex-direction:column; gap:9px; }
+.quiz-opt {
+  display:flex; align-items:center; gap:13px; padding:13px 17px; border-radius:10px;
+  border:1.5px solid var(--border); background:var(--surface);
+  font-size:.91rem; color:var(--ink-2); text-align:left; width:100%;
+  transition:border-color .2s, background .2s, color .2s, transform .15s;
+}
+.quiz-opt:hover:not(:disabled) { border-color:var(--accent); background:var(--accent-lt); color:var(--ink); transform:translateX(3px); }
+.opt-key { width:25px; height:25px; border-radius:50%; border:1.5px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; flex-shrink:0; }
+.quiz-opt.correct { border-color:var(--correct); background:#F0FFF4; color:var(--correct); transform:translateX(3px); }
+.quiz-opt.wrong   { border-color:var(--wrong); background:#FFF5F5; color:var(--wrong); }
+.quiz-opt:disabled { cursor:default; }
+
+.quiz-feedback { margin-top:14px; border-radius:10px; padding:13px 17px; font-size:.87rem; line-height:1.6; display:none; }
+.quiz-feedback.show { display:block; }
+.quiz-feedback.correct { background:#F0FFF4; color:var(--correct); border:1px solid #C6F6D5; }
+.quiz-feedback.wrong   { background:#FFF5F5; color:var(--wrong); border:1px solid #FED7D7; }
+.quiz-feedback strong  { font-weight:600; }
+
+.btn-next {
+  display:flex; align-items:center; justify-content:center; gap:10px; width:100%; margin-top:32px;
+  background:var(--ink); color:var(--bg); border-radius:14px; padding:17px 24px;
+  font-size:.97rem; font-weight:500; letter-spacing:-.01em;
+  transition:background .2s, transform .2s, box-shadow .2s; position:relative; overflow:hidden;
+}
+.btn-next::before { content:''; position:absolute; inset:0; background:var(--accent); transform:translateX(-100%); transition:transform .4s var(--ease-out); }
+.btn-next:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(28,25,23,.18); }
+.btn-next:hover::before { transform:translateX(0); }
+.btn-next span, .btn-next svg { position:relative; z-index:1; }
+.btn-arrow { width:18px; height:18px; transition:transform .25s var(--ease-out); }
+.btn-next:hover .btn-arrow { transform:translateX(4px); }
+
+.btn-share {
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:10px;
+  border:1.5px solid var(--border); border-radius:14px; padding:13px 24px;
+  font-size:.88rem; font-weight:500; color:var(--ink-2); transition:all .2s;
+}
+.btn-share:hover { border-color:var(--accent); color:var(--ink); background:var(--accent-lt); }
+
+/* Completed state */
+.completed-banner { background:linear-gradient(135deg,#2D6A4F,#1B4332); border-radius:14px; padding:24px; text-align:center; color:#fff; margin-top:32px; }
+.completed-banner .cb-icon { font-size:2.5rem; margin-bottom:10px; }
+.completed-banner h3 { font-family:var(--serif); font-size:1.6rem; font-weight:700; margin-bottom:6px; }
+.completed-banner p { font-size:.88rem; opacity:.85; font-weight:300; }
+
+/* ═══════════════════════════════════
+   CATEGORIES VIEW
+═══════════════════════════════════ */
+.view-header { max-width:720px; margin:0 auto; padding:40px 24px 20px; }
+.view-title { font-family:var(--serif); font-size:2.4rem; font-weight:700; letter-spacing:-.03em; }
+.view-title em { font-style:italic; color:var(--accent); font-weight:300; }
+.view-sub { font-size:.9rem; color:var(--ink-2); margin-top:6px; font-weight:300; }
+
+.categories-grid { max-width:720px; margin:0 auto; padding:0 24px 80px; display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.cat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px;
+  cursor:pointer; transition:all .25s var(--ease-out); position:relative; overflow:hidden;
+}
+.cat-card::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity .25s; border-radius:16px; }
+.cat-card:hover { transform:translateY(-3px); box-shadow:0 8px 30px rgba(0,0,0,.08); }
+.cat-card:hover::before { opacity:1; }
+.cat-card.c-econ::before  { background:linear-gradient(135deg,#FFFBEB,#FEF3C7); }
+.cat-card.c-psych::before { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); }
+.cat-card.c-hist::before  { background:linear-gradient(135deg,#F5F3FF,#EDE9FE); }
+.cat-card.c-tech::before  { background:linear-gradient(135deg,#ECFDF5,#D1FAE5); }
+.cat-card.c-biz::before   { background:linear-gradient(135deg,#F0F9FF,#E0F2FE); }
+.cat-card.c-gen::before   { background:linear-gradient(135deg,#FDF2F8,#FCE7F3); }
+.cat-icon { font-size:2rem; margin-bottom:12px; position:relative; z-index:1; }
+.cat-name { font-family:var(--serif); font-size:1.3rem; font-weight:700; letter-spacing:-.02em; position:relative; z-index:1; }
+.cat-count { font-size:.75rem; color:var(--ink-3); margin-top:4px; position:relative; z-index:1; }
+.cat-desc { font-size:.82rem; color:var(--ink-2); margin-top:8px; line-height:1.55; font-weight:300; position:relative; z-index:1; }
+
+/* ═══════════════════════════════════
+   ARCHIVE VIEW
+═══════════════════════════════════ */
+.archive-filters { max-width:720px; margin:0 auto; padding:0 24px 16px; display:flex; gap:8px; flex-wrap:wrap; }
+.filter-btn { padding:6px 16px; border-radius:100px; border:1.5px solid var(--border); font-size:.75rem; font-weight:500; color:var(--ink-2); background:var(--surface); transition:all .2s; }
+.filter-btn:hover { border-color:var(--accent); color:var(--accent); }
+.filter-btn.active { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+.archive-grid { max-width:720px; margin:0 auto; padding:0 24px 80px; display:grid; gap:12px; }
+.archive-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px 24px;
+  cursor:pointer; display:flex; align-items:center; gap:16px; transition:all .2s;
+}
+.archive-card:hover { border-color:var(--accent); transform:translateX(4px); box-shadow:0 4px 16px rgba(0,0,0,.06); }
+.archive-num { font-family:var(--serif); font-size:1.8rem; font-weight:700; color:var(--ink); opacity:.15; flex-shrink:0; min-width:36px; }
+.archive-info { flex:1; min-width:0; }
+.archive-title { font-family:var(--serif); font-size:1.1rem; font-weight:600; letter-spacing:-.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.archive-sub { font-size:.78rem; color:var(--ink-3); margin-top:2px; }
+.archive-tags { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+.archive-bookmark { font-size:1rem; flex-shrink:0; opacity:.4; transition:opacity .2s; }
+.archive-card:hover .archive-bookmark { opacity:.8; }
+.archive-card.is-bookmarked .archive-bookmark { opacity:1; color:var(--accent); }
+
+/* ═══════════════════════════════════
+   SEARCH VIEW
+═══════════════════════════════════ */
+.search-wrap { max-width:720px; margin:0 auto; padding:0 24px; }
+.search-input-wrap { position:relative; margin-bottom:24px; }
+.search-input-wrap svg { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--ink-3); pointer-events:none; }
+#searchInput {
+  width:100%; padding:15px 16px 15px 46px; border-radius:14px;
+  border:1.5px solid var(--border); background:var(--surface);
+  font-size:1rem; color:var(--ink); outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+#searchInput:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-lt); }
+.search-results { display:grid; gap:10px; }
+.search-empty { text-align:center; padding:40px 0; color:var(--ink-3); }
+.search-empty .se-icon { font-size:2.5rem; margin-bottom:10px; }
+.search-empty p { font-size:.9rem; }
+
+/* ═══════════════════════════════════
+   BOOKMARKS VIEW
+═══════════════════════════════════ */
+.bookmarks-empty { text-align:center; padding:60px 24px; max-width:360px; margin:0 auto; }
+.bookmarks-empty .be-icon { font-size:3rem; margin-bottom:14px; }
+.bookmarks-empty h3 { font-family:var(--serif); font-size:1.5rem; font-weight:600; margin-bottom:8px; }
+.bookmarks-empty p { font-size:.88rem; color:var(--ink-2); line-height:1.6; font-weight:300; }
+
+/* ═══════════════════════════════════
+   PREMIUM VIEW
+═══════════════════════════════════ */
+.premium-hero {
+  background: linear-gradient(145deg, #1C1917 0%, #2C2420 60%, #3B2A1A 100%);
+  padding: 64px 24px 56px; text-align: center; position: relative; overflow: hidden;
+}
+.premium-hero::before {
+  content: ''; position: absolute; inset: 0; opacity: .06;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E07B39' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.premium-eyebrow { font-size:.68rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; position:relative; }
+.premium-hero h2 { font-family:var(--serif); font-size:clamp(2rem,5vw,3.4rem); font-weight:700; line-height:1.08; letter-spacing:-.04em; color:#f5f0e8; position:relative; }
+.premium-hero h2 em { font-style:italic; font-weight:300; color:var(--accent); }
+.premium-hero-sub { font-size:.93rem; color:rgba(245,240,232,.6); max-width:420px; margin:14px auto 0; line-height:1.7; font-weight:300; position:relative; }
+
+.premium-wrap { max-width:780px; margin:0 auto; padding:0 24px 80px; }
+
+/* Free vs Pro toggle */
+.plan-toggle { display:flex; align-items:center; justify-content:center; gap:0; margin:40px auto 36px; background:var(--surface); border:1.5px solid var(--border); border-radius:100px; width:fit-content; padding:4px; }
+.plan-toggle-btn { padding:9px 24px; border-radius:100px; font-size:.82rem; font-weight:600; color:var(--ink-3); transition:all .25s; }
+.plan-toggle-btn.active { background:var(--ink); color:var(--bg); }
+.billing-badge { font-size:.65rem; background:#D1FAE5; color:#065F46; border-radius:100px; padding:2px 8px; font-weight:700; margin-left:6px; }
+
+/* Plans grid */
+.plans-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:48px; }
+.plan-card { background:var(--surface); border:1.5px solid var(--border); border-radius:20px; padding:32px 28px; position:relative; transition:transform .25s, box-shadow .25s; }
+.plan-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,.1); }
+.plan-card.featured { border-color:var(--accent); background:linear-gradient(160deg,#fff 0%,#FDF6F0 100%); }
+.plan-card.featured::before { content:'Ən populyar'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:4px 14px; border-radius:100px; white-space:nowrap; }
+.plan-name { font-family:var(--serif); font-size:1.5rem; font-weight:700; margin-bottom:4px; }
+.plan-tagline { font-size:.78rem; color:var(--ink-3); margin-bottom:20px; }
+.plan-price { display:flex; align-items:baseline; gap:4px; margin-bottom:6px; }
+.plan-price-num { font-family:var(--serif); font-size:2.6rem; font-weight:700; color:var(--ink); line-height:1; }
+.plan-price-per { font-size:.8rem; color:var(--ink-3); }
+.plan-price-annual { font-size:.74rem; color:var(--correct); margin-bottom:22px; font-weight:500; }
+.plan-divider { height:1px; background:var(--border); margin:20px 0; }
+.plan-features { display:flex; flex-direction:column; gap:10px; margin-bottom:26px; }
+.plan-feat { display:flex; align-items:flex-start; gap:10px; font-size:.84rem; color:var(--ink-2); line-height:1.45; }
+.plan-feat-icon { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; font-size:.7rem; }
+.plan-feat-icon.yes { background:#D1FAE5; color:var(--correct); }
+.plan-feat-icon.no  { background:#F3F4F6; color:var(--ink-3); }
+.plan-cta { width:100%; padding:14px; border-radius:12px; font-size:.9rem; font-weight:600; transition:all .22s; }
+.plan-cta.free-cta { border:1.5px solid var(--border); color:var(--ink-2); }
+.plan-cta.free-cta:hover { border-color:var(--ink); color:var(--ink); }
+.plan-cta.pro-cta { background:var(--accent); color:#fff; box-shadow:0 4px 16px rgba(224,123,57,.3); }
+.plan-cta.pro-cta:hover { background:var(--accent-dk); box-shadow:0 6px 24px rgba(224,123,57,.4); transform:translateY(-1px); }
+
+/* Revenue streams section */
+.revenue-section { margin-top:8px; }
+.revenue-title { font-family:var(--serif); font-size:1.8rem; font-weight:700; letter-spacing:-.03em; margin-bottom:6px; }
+.revenue-sub { font-size:.88rem; color:var(--ink-2); margin-bottom:28px; font-weight:300; }
+.revenue-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.revenue-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; transition:all .22s; }
+.revenue-card:hover { border-color:var(--accent); box-shadow:0 4px 18px rgba(0,0,0,.07); }
+.revenue-icon { font-size:1.8rem; margin-bottom:12px; }
+.revenue-name { font-weight:600; font-size:.95rem; margin-bottom:5px; }
+.revenue-desc { font-size:.8rem; color:var(--ink-2); line-height:1.55; font-weight:300; }
+.revenue-est { display:inline-block; margin-top:10px; font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); background:var(--accent-lt); border-radius:100px; padding:2px 10px; }
+
+/* Roadmap */
+.roadmap { margin-top:48px; }
+.roadmap-title { font-family:var(--serif); font-size:1.8rem; font-weight:700; letter-spacing:-.03em; margin-bottom:28px; }
+.roadmap-steps { display:flex; flex-direction:column; gap:0; position:relative; }
+.roadmap-steps::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background:var(--border); }
+.roadmap-step { display:flex; gap:20px; padding-bottom:32px; position:relative; }
+.roadmap-step:last-child { padding-bottom:0; }
+.roadmap-dot { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; position:relative; z-index:1; border:2px solid var(--border); background:var(--surface); }
+.roadmap-step.done .roadmap-dot { background:var(--ink); border-color:var(--ink); }
+.roadmap-step.active .roadmap-dot { background:var(--accent); border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-lt); }
+.roadmap-content { padding-top:8px; }
+.roadmap-phase { font-size:.65rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:4px; }
+.roadmap-step.active .roadmap-phase { color:var(--accent); }
+.roadmap-name { font-weight:600; font-size:.95rem; margin-bottom:4px; }
+.roadmap-detail { font-size:.82rem; color:var(--ink-2); line-height:1.55; font-weight:300; }
+
+/* Sponsor banner */
+.sponsor-banner { margin-top:48px; background:linear-gradient(135deg,#1C1917,#2C2420); border-radius:20px; padding:36px 32px; color:#f5f0e8; display:flex; align-items:center; gap:24px; }
+.sponsor-text h3 { font-family:var(--serif); font-size:1.6rem; font-weight:700; margin-bottom:8px; letter-spacing:-.02em; }
+.sponsor-text p { font-size:.85rem; opacity:.7; line-height:1.6; font-weight:300; }
+.sponsor-cta { flex-shrink:0; padding:13px 24px; background:var(--accent); color:#fff; border-radius:12px; font-size:.88rem; font-weight:600; white-space:nowrap; transition:background .2s; cursor:pointer; }
+.sponsor-cta:hover { background:var(--accent-dk); }
+
+@media(max-width:600px){
+  .plans-grid { grid-template-columns:1fr; }
+  .revenue-grid { grid-template-columns:1fr; }
+  .premium-hero { padding:44px 20px 40px; }
+  .premium-wrap { padding:0 14px 60px; }
+  .sponsor-banner { flex-direction:column; text-align:center; padding:28px 20px; }
+}
+
+/* ═══════════════════════════════════
+   FOOTER
+═══════════════════════════════════ */
+footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.footer-brand { font-family:var(--serif); font-size:.9rem; color:var(--ink-2); }
+.footer-count { font-size:.75rem; color:var(--ink-3); font-weight:300; }
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+.toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(14px);
+  background:var(--ink); color:var(--bg); padding:10px 22px; border-radius:100px;
+  font-size:.83rem; font-weight:500; white-space:nowrap;
+  opacity:0; transition:opacity .3s, transform .3s var(--ease-out); z-index:600; pointer-events:none;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.xp-toast {
+  position:fixed; bottom:74px; left:50%; transform:translateX(-50%) translateY(8px);
+  background:var(--accent); color:#fff; padding:8px 18px; border-radius:100px;
+  font-size:.8rem; font-weight:600; white-space:nowrap;
+  opacity:0; transition:opacity .25s, transform .3s var(--ease-out); z-index:601; pointer-events:none;
+}
+.xp-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════
+   SEARCH OVERLAY
+═══════════════════════════════════ */
+.search-overlay {
+  position:fixed; inset:0; background:rgba(28,25,23,.6); z-index:300; backdrop-filter:blur(6px);
+  display:flex; align-items:flex-start; justify-content:center; padding-top:80px;
+  opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.search-overlay.open { opacity:1; pointer-events:all; }
+.search-modal { background:var(--surface); border-radius:20px; padding:24px; width:100%; max-width:600px; margin:0 20px; box-shadow:0 20px 60px rgba(0,0,0,.15); }
+.search-modal-input-wrap { position:relative; margin-bottom:16px; }
+.search-modal-input-wrap svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink-3); }
+#overlaySearch {
+  width:100%; padding:13px 14px 13px 44px; border-radius:12px;
+  border:1.5px solid var(--border); font-size:.95rem; color:var(--ink); outline:none;
+  background:var(--bg); transition:border-color .2s;
+}
+#overlaySearch:focus { border-color:var(--accent); }
+.search-results-list { max-height:400px; overflow-y:auto; display:grid; gap:8px; }
+.search-result-item { padding:13px 16px; border-radius:10px; cursor:pointer; transition:background .15s; display:flex; align-items:center; gap:12px; }
+.search-result-item:hover { background:var(--bg); }
+.sri-num { font-family:var(--serif); font-size:1.1rem; font-weight:700; color:var(--ink-3); flex-shrink:0; min-width:28px; }
+.sri-info .sri-title { font-weight:500; font-size:.9rem; }
+.sri-info .sri-sub { font-size:.75rem; color:var(--ink-3); margin-top:2px; }
+
+/* ═══════════════════════════════════
+   LEVEL UP MODAL
+═══════════════════════════════════ */
+.levelup-overlay {
+  position:fixed; inset:0; background:rgba(28,25,23,.7); z-index:400; display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(8px); opacity:0; pointer-events:none; transition:opacity .35s;
+}
+.levelup-overlay.open { opacity:1; pointer-events:all; }
+.levelup-modal { background:var(--surface); border-radius:24px; padding:40px 36px; max-width:380px; width:calc(100% - 48px); text-align:center; box-shadow:0 30px 80px rgba(0,0,0,.2); }
+.levelup-badge { font-size:3.5rem; margin-bottom:16px; }
+.levelup-label { font-size:.72rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+.levelup-name { font-family:var(--serif); font-size:2.2rem; font-weight:700; letter-spacing:-.03em; margin-bottom:10px; }
+.levelup-sub { font-size:.88rem; color:var(--ink-2); line-height:1.6; font-weight:300; margin-bottom:24px; }
+.levelup-close { width:100%; padding:14px; background:var(--ink); color:var(--bg); border-radius:12px; font-size:.93rem; font-weight:500; transition:background .2s; }
+.levelup-close:hover { background:var(--accent); }
+
+/* ═══════════════════════════════════
+   SHARE MODAL
+═══════════════════════════════════ */
+.share-overlay {
+  position:fixed; inset:0; background:rgba(28,25,23,.6); z-index:350; display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.share-overlay.open { opacity:1; pointer-events:all; }
+.share-modal { background:var(--surface); border-radius:24px; padding:32px; max-width:420px; width:calc(100% - 48px); box-shadow:0 20px 60px rgba(0,0,0,.18); }
+.share-modal h3 { font-family:var(--serif); font-size:1.5rem; font-weight:700; margin-bottom:20px; letter-spacing:-.02em; }
+.share-card-preview {
+  background:#1C1917; border-radius:16px; padding:24px; margin-bottom:20px;
+  color:#f5f0e8; position:relative; overflow:hidden;
+}
+.scp-eyebrow { font-size:.65rem; letter-spacing:.14em; text-transform:uppercase; opacity:.5; margin-bottom:10px; }
+.scp-title { font-family:var(--serif); font-size:1.5rem; font-weight:700; line-height:1.1; letter-spacing:-.02em; margin-bottom:8px; }
+.scp-insight { font-size:.82rem; opacity:.75; line-height:1.6; font-weight:300; }
+.scp-footer { margin-top:16px; display:flex; align-items:center; justify-content:space-between; }
+.scp-streak { font-size:.75rem; opacity:.6; }
+.scp-domain { font-size:.7rem; opacity:.4; letter-spacing:.04em; }
+.share-card-preview.theme-light { background:#FFFFFF; color:#1C1917; border:1px solid var(--border); }
+.share-card-preview.theme-accent { background:var(--accent); color:#fff; }
+.theme-dots { display:flex; gap:8px; margin-bottom:16px; }
+.theme-dot { width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color .2s; }
+.theme-dot.active { border-color:var(--ink); }
+.theme-dot.td-dark { background:#1C1917; }
+.theme-dot.td-light { background:#fff; border:2px solid #e0dcdc; }
+.theme-dot.td-accent { background:var(--accent); }
+.share-btns { display:grid; gap:10px; }
+.share-btn { padding:12px 16px; border-radius:12px; border:1.5px solid var(--border); font-size:.88rem; font-weight:500; color:var(--ink-2); display:flex; align-items:center; justify-content:center; gap:8px; transition:all .2s; }
+.share-btn:hover { border-color:var(--accent); color:var(--ink); background:var(--accent-lt); }
+.share-btn.primary { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.share-btn.primary:hover { background:var(--accent); border-color:var(--accent); }
+.share-close { position:absolute; top:16px; right:16px; width:30px; height:30px; border-radius:50%; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:1rem; color:var(--ink-2); }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media(max-width:600px){
+  header { padding:16px 18px; }
+  .header-nav { gap:2px; }
+  .nav-btn { padding:6px 10px; font-size:.74rem; }
+  .hero { padding:44px 18px 30px; }
+  .card-wrap { padding:0 14px 60px; }
+  .concept-card { padding:28px 24px 24px; }
+  .categories-grid { grid-template-columns:1fr; padding:0 14px 60px; }
+  .archive-grid { padding:0 14px 60px; }
+  .streak-bar { padding:10px 16px; gap:14px; }
+  .xp-bar-bg { width:72px; }
+  footer { padding:20px 18px; }
+  .streak-item:last-child { display:none; }
+  .view-header { padding:30px 14px 14px; }
+  .search-wrap { padding:0 14px; }
+  .archive-filters { padding:0 14px 14px; }
+}
+@media(max-width:420px){
+  .nav-btn span { display:none; }
+  .nav-btn::before { display:block; }
+}
+
+/* ═══════════════════════════════════
+   SPLASH SCREEN
+═══════════════════════════════════ */
+.splash {
+  position: fixed; inset: 0; z-index: 2000;
+  background: var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+.splash.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
+.splash-logo {
+  width: 80px; height: 80px; border-radius: 24px;
+  background: linear-gradient(145deg, #2C2420, #3B2A1A);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 2.6rem; font-weight: 700; color: #f5f0e8;
+  position: relative; box-shadow: 0 0 0 1px rgba(224,123,57,.3), 0 20px 60px rgba(0,0,0,.5);
+  animation: splashPulse 1.8s ease-in-out infinite;
+}
+@keyframes splashPulse {
+  0%,100% { box-shadow: 0 0 0 1px rgba(224,123,57,.3), 0 20px 60px rgba(0,0,0,.5); }
+  50%      { box-shadow: 0 0 0 8px rgba(224,123,57,.1), 0 20px 60px rgba(0,0,0,.5); }
+}
+.splash-logo-pip {
+  position: absolute; top: 10px; right: 10px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); animation: breathe 2.4s ease-in-out infinite;
+}
+.splash-name {
+  font-family: var(--serif); font-size: 1.4rem; font-weight: 600;
+  color: #f5f0e8; letter-spacing: -.02em; opacity: 0;
+  animation: splashFadeUp .6s var(--ease-out) .3s forwards;
+}
+.splash-sub {
+  font-size: .78rem; color: rgba(245,240,232,.45); letter-spacing: .06em;
+  text-transform: uppercase; opacity: 0;
+  animation: splashFadeUp .6s var(--ease-out) .5s forwards;
+}
+.splash-bar-wrap {
+  width: 120px; height: 2px; background: rgba(255,255,255,.08); border-radius: 10px;
+  overflow: hidden; opacity: 0; animation: splashFadeUp .4s var(--ease-out) .7s forwards;
+}
+.splash-bar {
+  height: 100%; background: var(--accent); border-radius: 10px; width: 0%;
+  animation: splashLoad 1.4s var(--ease-out) .7s forwards;
+}
+@keyframes splashFadeUp { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(8px); } }
+@keyframes splashLoad   { to { width: 100%; } }
+
+/* ═══════════════════════════════════
+   ONBOARDING OVERLAY
+═══════════════════════════════════ */
+.onboarding-overlay {
+  position: fixed; inset: 0; z-index: 1500;
+  background: rgba(28,25,23,.75); backdrop-filter: blur(10px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .35s;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.onboarding-overlay.open { opacity: 1; pointer-events: all; }
+.onboarding-sheet {
+  background: var(--surface); border-radius: 28px 28px 0 0; width: 100%; max-width: 520px;
+  padding: 12px 0 0; overflow: hidden;
+  transform: translateY(40px); transition: transform .4s var(--ease-out);
+}
+.onboarding-overlay.open .onboarding-sheet { transform: translateY(0); }
+.ob-handle { width: 36px; height: 4px; background: var(--border); border-radius: 10px; margin: 0 auto 24px; }
+.ob-steps { display: flex; transition: transform .4s var(--ease-out); }
+.ob-step { min-width: 100%; padding: 0 28px 32px; }
+.ob-step-icon { font-size: 3rem; margin-bottom: 16px; text-align: center; }
+.ob-step h3 {
+  font-family: var(--serif); font-size: 1.9rem; font-weight: 700;
+  letter-spacing: -.03em; line-height: 1.1; margin-bottom: 10px; text-align: center;
+}
+.ob-step h3 em { font-style: italic; font-weight: 300; color: var(--accent); }
+.ob-step p { font-size: .9rem; color: var(--ink-2); line-height: 1.7; font-weight: 300; text-align: center; margin-bottom: 24px; }
+
+/* Step dots */
+.ob-dots { display: flex; justify-content: center; gap: 7px; margin-bottom: 20px; }
+.ob-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: all .3s; }
+.ob-dot.active { background: var(--accent); width: 20px; border-radius: 10px; }
+
+/* CTA inside onboarding */
+.ob-cta {
+  width: 100%; padding: 16px; border-radius: 14px;
+  background: var(--ink); color: var(--bg);
+  font-size: .97rem; font-weight: 600; letter-spacing: -.01em;
+  transition: background .2s, transform .15s; margin-bottom: 10px;
+}
+.ob-cta:hover { background: var(--accent); transform: translateY(-1px); }
+.ob-skip { width: 100%; padding: 10px; font-size: .83rem; color: var(--ink-3); transition: color .2s; }
+.ob-skip:hover { color: var(--ink-2); }
+
+/* Feature list in onboarding */
+.ob-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.ob-feat { display: flex; align-items: center; gap: 14px; background: var(--bg); border-radius: 12px; padding: 12px 16px; }
+.ob-feat-icon { font-size: 1.4rem; flex-shrink: 0; }
+.ob-feat-text strong { display: block; font-size: .88rem; font-weight: 600; margin-bottom: 2px; }
+.ob-feat-text span  { font-size: .78rem; color: var(--ink-3); }
+
+/* ═══════════════════════════════════
+   PWA INSTALL CARD (replaces old banner)
+═══════════════════════════════════ */
+.pwa-install-card {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120px);
+  z-index: 700; width: calc(100% - 32px); max-width: 420px;
+  background: var(--ink); color: #f5f0e8; border-radius: 20px;
+  padding: 20px; box-shadow: 0 8px 40px rgba(0,0,0,.28);
+  transition: transform .45s var(--ease-out);
+}
+.pwa-install-card.show { transform: translateX(-50%) translateY(0); }
+.pwa-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.pwa-card-app-icon {
+  width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+  background: linear-gradient(145deg, #2C2420, #3B2A1A);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 1.5rem; font-weight: 700; color: #f5f0e8;
+  border: 1px solid rgba(224,123,57,.25);
+}
+.pwa-card-info { flex: 1; }
+.pwa-card-info strong { display: block; font-size: .95rem; font-weight: 600; margin-bottom: 3px; }
+.pwa-card-info span { font-size: .78rem; opacity: .55; }
+.pwa-card-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.pwa-card-step { display: flex; align-items: center; gap: 10px; }
+.pwa-step-num {
+  width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 700; flex-shrink: 0; color: rgba(255,255,255,.7);
+}
+.pwa-step-num.done { background: var(--accent); color: #fff; }
+.pwa-card-step span { font-size: .82rem; opacity: .75; }
+.pwa-card-btns { display: flex; gap: 10px; }
+.pwa-install-btn {
+  flex: 1; padding: 13px; border-radius: 12px; font-size: .88rem; font-weight: 600;
+  background: var(--accent); color: #fff; transition: background .2s, transform .15s;
+}
+.pwa-install-btn:hover { background: var(--accent-dk); transform: translateY(-1px); }
+.pwa-dismiss-btn {
+  padding: 13px 16px; border-radius: 12px; font-size: .82rem; font-weight: 500;
+  border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.5);
+  transition: all .2s;
+}
+.pwa-dismiss-btn:hover { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.8); }
+
+/* iOS install instructions */
+.ios-hint {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120px);
+  z-index: 700; width: calc(100% - 32px); max-width: 380px;
+  background: var(--ink); color: #f5f0e8; border-radius: 20px;
+  padding: 20px; box-shadow: 0 8px 40px rgba(0,0,0,.28);
+  transition: transform .45s var(--ease-out); text-align: center;
+}
+.ios-hint.show { transform: translateX(-50%) translateY(0); }
+.ios-hint h4 { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+.ios-hint p { font-size: .82rem; opacity: .7; line-height: 1.6; margin-bottom: 16px; }
+.ios-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; text-align: left; }
+.ios-step { display: flex; align-items: center; gap: 10px; font-size: .82rem; opacity: .8; }
+.ios-step-icon { font-size: 1.1rem; flex-shrink: 0; }
+.ios-hint-close { padding: 10px 24px; border-radius: 100px; border: 1px solid rgba(255,255,255,.2); font-size: .82rem; color: rgba(255,255,255,.6); transition: all .2s; }
+.ios-hint-close:hover { border-color: rgba(255,255,255,.5); color: #fff; }
+
+/* Arrow pointing down for iOS */
+.ios-arrow {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  z-index: 701; font-size: 1.8rem;
+  animation: bounce 1s ease-in-out infinite;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.ios-arrow.show { opacity: 1; }
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+
+/* ═══════════════════════════════════
+   NOTIFICATION PROMPT
+═══════════════════════════════════ */
+.notif-prompt {
+  position: fixed; top: 80px; right: 16px; z-index: 650;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 18px 20px; max-width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  transform: translateX(120%); transition: transform .4s var(--ease-out);
+}
+.notif-prompt.show { transform: translateX(0); }
+.notif-prompt-icon { font-size: 1.6rem; margin-bottom: 8px; }
+.notif-prompt strong { display: block; font-size: .88rem; font-weight: 600; margin-bottom: 4px; }
+.notif-prompt p { font-size: .78rem; color: var(--ink-2); line-height: 1.5; margin-bottom: 14px; font-weight: 300; }
+.notif-prompt-btns { display: flex; gap: 8px; }
+.notif-yes { flex: 1; padding: 8px; border-radius: 8px; background: var(--accent); color: #fff; font-size: .8rem; font-weight: 600; transition: background .2s; }
+.notif-yes:hover { background: var(--accent-dk); }
+.notif-no { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); color: var(--ink-3); font-size: .8rem; transition: all .2s; }
+.notif-no:hover { border-color: var(--ink-3); color: var(--ink-2); }
+
+/* ═══════════════════════════════════
+   UPDATE BANNER
+═══════════════════════════════════ */
+.update-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+  background: var(--correct); color: #fff; padding: 12px 20px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: .85rem; font-weight: 500; transform: translateY(-100%);
+  transition: transform .35s var(--ease-out);
+}
+.update-banner.show { transform: translateY(0); }
+.update-btn { padding: 5px 14px; border-radius: 100px; background: rgba(255,255,255,.2); font-size: .8rem; font-weight: 600; transition: background .2s; }
+.update-btn:hover { background: rgba(255,255,255,.35); }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo" onclick="showView('home')">
+    <div class="logo-pip"></div>
+    Bugün nə öyrənim?
+  </div>
+  <nav class="header-nav">
+    <button class="nav-btn active" id="nav-home" onclick="showView('home')"><span>Ana səhifə</span></button>
+    <button class="nav-btn" id="nav-categories" onclick="showView('categories')"><span>Kateqoriyalar</span></button>
+    <button class="nav-btn" id="nav-archive" onclick="showView('archive')"><span>Arxiv</span></button>
+    <button class="nav-btn" id="nav-bookmarks" onclick="showView('bookmarks')">🔖</button>
+    <button class="nav-btn" id="nav-premium" onclick="showView('premium')" style="color:var(--accent);font-weight:600">✦ Pro</button>
+    <button class="search-btn" onclick="openSearchOverlay()" title="Axtar">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="5"/><path d="M12 12l3 3"/></svg>
+    </button>
+  </nav>
+</header>
+
+<!-- STREAK BAR -->
+<div class="streak-bar">
+  <div class="streak-item">
+    <span class="streak-flame" id="streakFlame">🔥</span>
+    <span class="streak-count" id="streakCount">0</span>
+    <span class="streak-label">günlük seriya</span>
+  </div>
+  <div class="streak-item">
+    <div class="week-dots" id="weekDots"></div>
+  </div>
+  <div class="streak-item xp-bar-wrap">
+    <span class="streak-label" id="xpCount">0</span>
+    <span class="streak-label">XP</span>
+    <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
+    <span class="level-badge" id="levelBadge">Meraqlı</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     HOME VIEW
+════════════════════════════════ -->
+<div class="view active" id="view-home">
+  <section class="hero">
+    <div class="hero-eyebrow">Günün Konsepti</div>
+    <h1>Hər gün bir <em>fikir</em>,<br>hər fikir bir addım</h1>
+    <p class="hero-sub">2–3 dəqiqəyə iqtisadiyyat, psixologiya, tarix, texnologiya sahələrindən bir konsept öyrən.</p>
+  </section>
+
+  <main class="card-wrap">
+    <div class="concept-card enter" id="card"></div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════
+     CATEGORIES VIEW
+════════════════════════════════ -->
+<div class="view" id="view-categories">
+  <div class="view-header">
+    <h2 class="view-title">Kateqoriyalar</h2>
+    <p class="view-sub">Maraqlandığın sahəni seç və o sahədən dərsləri gör.</p>
+  </div>
+  <div class="categories-grid" id="categoriesGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════
+     ARCHIVE VIEW
+════════════════════════════════ -->
+<div class="view" id="view-archive">
+  <div class="view-header">
+    <h2 class="view-title">Bütün <em>Dərslər</em></h2>
+    <p class="view-sub" id="archiveSubtitle">50 konsept mövcuddur</p>
+  </div>
+  <div class="archive-filters" id="archiveFilters"></div>
+  <div class="archive-grid" id="archiveGrid"></div>
+</div>
+
+<!-- ═══════════════════════════════
+     BOOKMARKS VIEW
+════════════════════════════════ -->
+<div class="view" id="view-bookmarks">
+  <div class="view-header">
+    <h2 class="view-title">Yadda saxladıqlarım</h2>
+    <p class="view-sub">İşarələdiyin dərslər burada görünür.</p>
+  </div>
+  <div id="bookmarksContainer"></div>
+</div>
+
+<!-- ═══════════════════════════════
+     PREMIUM VIEW
+════════════════════════════════ -->
+<div class="view" id="view-premium">
+
+  <!-- Hero -->
+  <div class="premium-hero">
+    <div class="premium-eyebrow">✦ Part 9 — Monetizasiya</div>
+    <h2>Daha dərin <em>öyrən</em>,<br>daha sürətli böyü</h2>
+    <p class="premium-hero-sub">Pulsuz versiya möhtəşəmdir. Premium isə öyrənməni tam başqa səviyyəyə aparır.</p>
+  </div>
+
+  <div class="premium-wrap">
+
+    <!-- Billing toggle -->
+    <div class="plan-toggle">
+      <button class="plan-toggle-btn active" id="toggleMonthly" onclick="setBilling('monthly')">Aylıq</button>
+      <button class="plan-toggle-btn" id="toggleAnnual" onclick="setBilling('annual')">İllik <span class="billing-badge">−40%</span></button>
+    </div>
+
+    <!-- Plans -->
+    <div class="plans-grid">
+
+      <!-- Free -->
+      <div class="plan-card">
+        <div class="plan-name">Pulsuz</div>
+        <div class="plan-tagline">Həmişəlik. Heç bir kart lazım deyil.</div>
+        <div class="plan-price">
+          <span class="plan-price-num">₼0</span>
+          <span class="plan-price-per">/ ay</span>
+        </div>
+        <div class="plan-price-annual" style="visibility:hidden">–</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Hər gün 1 konsept</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Mini quiz</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Streak &amp; XP sistemi</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Bookmark (saxla)</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>50+ dərsin arxivi</div>
+          <div class="plan-feat"><span class="plan-feat-icon no">–</span><span style="opacity:.4">Limitsiz gündəlik dərs</span></div>
+          <div class="plan-feat"><span class="plan-feat-icon no">–</span><span style="opacity:.4">Şəxsi öyrənmə yolu</span></div>
+          <div class="plan-feat"><span class="plan-feat-icon no">–</span><span style="opacity:.4">Offline rejim</span></div>
+          <div class="plan-feat"><span class="plan-feat-icon no">–</span><span style="opacity:.4">Sertifikat</span></div>
+        </div>
+        <button class="plan-cta free-cta" onclick="showView('home')">Pulsuz davam et</button>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-tagline">Ciddi öyrənənlər üçün.</div>
+        <div class="plan-price">
+          <span class="plan-price-num" id="proPrice">₼6</span>
+          <span class="plan-price-per">/ ay</span>
+        </div>
+        <div class="plan-price-annual" id="proAnnualNote">İllik ödənişdə ₼43.2/il (₼3.6/ay)</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Pulsuz plandakı hər şey</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span><strong>Limitsiz</strong> gündəlik dərs — istədiyin qədər</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>AI ilə şəxsi öyrənmə yolu</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Dərin analiz dərsləri (7–10 dəq)</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Offline rejim</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Reklamsız təcrübə</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Aylıq tamamlama sertifikatı</div>
+          <div class="plan-feat"><span class="plan-feat-icon yes">✓</span>Prioritet yeni kontent</div>
+        </div>
+        <button class="plan-cta pro-cta" onclick="showToast('🚀 Tezliklə mövcud olacaq!')">Pro-ya keç →</button>
+      </div>
+    </div>
+
+    <!-- Revenue Streams -->
+    <div class="revenue-section">
+      <div class="revenue-title">Gəlir Mənbələri</div>
+      <div class="revenue-sub">Platformanın uzunmüddətli böyüməsini dəstəkləyən 4 əsas kanal</div>
+      <div class="revenue-grid">
+
+        <div class="revenue-card">
+          <div class="revenue-icon">💳</div>
+          <div class="revenue-name">Freemium Abunəlik</div>
+          <div class="revenue-desc">Pulsuz istifadəçilər bazasını böyüdür, premium funksiyalar konversiya yaradır. SaaS modelinin ən sübut edilmiş yolu.</div>
+          <span class="revenue-est">Faz 1 · İlk gəlir</span>
+        </div>
+
+        <div class="revenue-card">
+          <div class="revenue-icon">🤝</div>
+          <div class="revenue-name">Sponsor Dərslər</div>
+          <div class="revenue-desc">Bank, sığorta, texnologiya şirkətləri öz sahəsindən branded dərs sifariş edir. Reklam deyil — real dəyər verən kontent.</div>
+          <span class="revenue-est">Faz 2 · B2B gəlir</span>
+        </div>
+
+        <div class="revenue-card">
+          <div class="revenue-icon">🏢</div>
+          <div class="revenue-name">Korporativ Plan</div>
+          <div class="revenue-desc">Şirkətlər işçiləri üçün toplu abunəlik alır. HR departamentləri üçün öyrənmə dashboard-u. Aylıq hesabat.</div>
+          <span class="revenue-est">Faz 3 · Böyük gəlir</span>
+        </div>
+
+        <div class="revenue-card">
+          <div class="revenue-icon">🎓</div>
+          <div class="revenue-name">Təhsil Tərəfdaşlığı</div>
+          <div class="revenue-desc">Universitetlər, tədris mərkəzləri ilə inteqrasiya. Akademik lisenziyeleme, sertifikat proqramları, tələbə planları.</div>
+          <span class="revenue-est">Faz 4 · Ekosistem</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="roadmap">
+      <div class="roadmap-title">Böyümə Yol Xəritəsi</div>
+      <div class="roadmap-steps">
+
+        <div class="roadmap-step done">
+          <div class="roadmap-dot">✓</div>
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Faz 1 — Hazır</div>
+            <div class="roadmap-name">MVP Buraxılışı</div>
+            <div class="roadmap-detail">50 dərs, quiz sistemi, streak, bookmark, paylaşma. Pulsuz istifadəçi bazasını qurmaq.</div>
+          </div>
+        </div>
+
+        <div class="roadmap-step active">
+          <div class="roadmap-dot">→</div>
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Faz 2 — İndi</div>
+            <div class="roadmap-name">Böyümə &amp; Kontent Genişlənməsi</div>
+            <div class="roadmap-detail">500+ dərs, email abunəlik, sosial media paylaşım loopları, SEO optimallaşdırması, ilk 10.000 istifadəçi.</div>
+          </div>
+        </div>
+
+        <div class="roadmap-step">
+          <div class="roadmap-dot">3</div>
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Faz 3 — Yaxın</div>
+            <div class="roadmap-name">Monetizasiya Aktivasiyası</div>
+            <div class="roadmap-detail">Pro plan, sponsor dərslər, korporativ abunəliklər. Hədəf: 1000 ödəniş edən istifadəçi.</div>
+          </div>
+        </div>
+
+        <div class="roadmap-step">
+          <div class="roadmap-dot">4</div>
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Faz 4 — Gələcək</div>
+            <div class="roadmap-name">Platform &amp; Ekosistem</div>
+            <div class="roadmap-detail">AI-destekli şəxsi öyrənmə yolu, mobil tətbiq, universitetlərlə tərəfdaşlıq, çox dilli genişlənmə.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sponsor CTA -->
+    <div class="sponsor-banner">
+      <div class="sponsor-text">
+        <h3>Sponsor olmaq istəyirsiniz?</h3>
+        <p>Hər gün minlərlə öyrənmək istəyən insan platformamızı istifadə edir. Brendinizi onlarla doğru anda, doğru kontekstdə tanış edin.</p>
+      </div>
+      <button class="sponsor-cta" onclick="showToast('📩 sponsor@bugunneoyrenimdir.az')">Əlaqə saxla</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">Bugün nə öyrənim?</span>
+  <span class="footer-count" id="footerCount">50 konsept mövcuddur</span>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<div class="xp-toast" id="xpToast"></div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearchOverlay(event)">
+  <div class="search-modal" onclick="event.stopPropagation()">
+    <div class="search-modal-input-wrap">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M14 14l3 3"/></svg>
+      <input id="overlaySearch" placeholder="Konsept axtar..." oninput="handleOverlaySearch(this.value)" autocomplete="off">
+    </div>
+    <div class="search-results-list" id="searchResultsList"></div>
+  </div>
+</div>
+
+<!-- LEVEL UP MODAL -->
+<div class="levelup-overlay" id="levelupOverlay">
+  <div class="levelup-modal">
+    <div class="levelup-badge" id="levelupBadge">🎓</div>
+    <div class="levelup-label">Yeni Səviyyə!</div>
+    <div class="levelup-name" id="levelupName"></div>
+    <p class="levelup-sub" id="levelupSub"></p>
+    <button class="levelup-close" onclick="closeLevelup()">Davam et →</button>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="share-overlay" id="shareOverlay">
+  <div class="share-modal" style="position:relative">
+    <button class="share-close" onclick="closeShare()">✕</button>
+    <h3>Bu konsepti paylaş</h3>
+    <div class="theme-dots">
+      <div class="theme-dot td-dark active" onclick="setShareTheme('dark',this)" title="Tünd"></div>
+      <div class="theme-dot td-light" onclick="setShareTheme('light',this)" title="Açıq"></div>
+      <div class="theme-dot td-accent" onclick="setShareTheme('accent',this)" title="Narıncı"></div>
+    </div>
+    <div class="share-card-preview" id="shareCard">
+      <div class="scp-eyebrow">BUGÜN ÖYRƏNDİM · bugunneoyrenimdir.az</div>
+      <div class="scp-title" id="scTitle"></div>
+      <div class="scp-insight" id="scInsight"></div>
+      <div class="scp-footer">
+        <span class="scp-streak" id="scStreak"></span>
+        <span class="scp-domain">bugunneoyrenimdir.az</span>
+      </div>
+    </div>
+    <div class="share-btns">
+      <button class="share-btn primary" onclick="copyShareText()">📋 Mətni kopyala</button>
+      <button class="share-btn" onclick="shareWhatsApp()">💬 WhatsApp ilə paylaş</button>
+      <button class="share-btn" onclick="shareNative()">↗ Paylaş</button>
+    </div>
+  </div>
+</div>
+
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splash">
+  <div class="splash-logo">B<div class="splash-logo-pip"></div></div>
+  <div class="splash-name">Bugün nə öyrənim?</div>
+  <div class="splash-sub">Hər gün bir konsept</div>
+  <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+</div>
+
+<!-- ONBOARDING SHEET (first-time users) -->
+<div class="onboarding-overlay" id="onboardingOverlay">
+  <div class="onboarding-sheet">
+    <div class="ob-handle"></div>
+    <div class="ob-steps" id="obSteps">
+
+      <!-- Step 1: Welcome -->
+      <div class="ob-step">
+        <div class="ob-step-icon">📚</div>
+        <h3>Hər gün bir <em>fikir</em></h3>
+        <p>2–3 dəqiqəyə iqtisadiyyat, psixologiya, tarix, texnologiya sahələrindən bir konsept öyrən. Hər gün, hər addımda bir az daha bilikli ol.</p>
+        <div class="ob-features">
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🔥</div>
+            <div class="ob-feat-text"><strong>Streak sistemi</strong><span>Hər gün öyrən, seriani qoru</span></div>
+          </div>
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🧠</div>
+            <div class="ob-feat-text"><strong>Mini quiz</strong><span>Öyrəndiyini dərhal sına</span></div>
+          </div>
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🔖</div>
+            <div class="ob-feat-text"><strong>Bookmark</strong><span>Bəyəndiklərini saxla</span></div>
+          </div>
+        </div>
+        <div class="ob-dots">
+          <div class="ob-dot active"></div>
+          <div class="ob-dot"></div>
+          <div class="ob-dot"></div>
+        </div>
+        <button class="ob-cta" onclick="obNext()">Başlayaq →</button>
+        <button class="ob-skip" onclick="obFinish()">Onsuz da tanıyıram, keç</button>
+      </div>
+
+      <!-- Step 2: Install -->
+      <div class="ob-step">
+        <div class="ob-step-icon">📱</div>
+        <h3>Telefona <em>yüklə</em></h3>
+        <p>Ana ekrana əlavə et — sanki App Store-dan endirilib. İnternet olmadan da işləyir. Pulsuz, həmişəlik.</p>
+        <div class="ob-features">
+          <div class="ob-feat">
+            <div class="ob-feat-icon">⚡</div>
+            <div class="ob-feat-text"><strong>Offline rejim</strong><span>İnternetsiz də bütün dərslər açılır</span></div>
+          </div>
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🏠</div>
+            <div class="ob-feat-text"><strong>Ana ekranda</strong><span>Bir toxunuşla açılır</span></div>
+          </div>
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🚀</div>
+            <div class="ob-feat-text"><strong>Sürətli açılış</strong><span>Native app kimi davranır</span></div>
+          </div>
+        </div>
+        <div class="ob-dots">
+          <div class="ob-dot"></div>
+          <div class="ob-dot active"></div>
+          <div class="ob-dot"></div>
+        </div>
+        <button class="ob-cta" id="obInstallBtn" onclick="obInstall()">📱 Ana ekrana əlavə et</button>
+        <button class="ob-skip" onclick="obNext()">Sonra</button>
+      </div>
+
+      <!-- Step 3: Ready -->
+      <div class="ob-step">
+        <div class="ob-step-icon">🎉</div>
+        <h3>Hazırsın!</h3>
+        <p>Bugünkü konseptini öyrənməyə başla. 50-dən çox dərs sənin üçün hazırlanıb. Hər gün yenisi əlavə olunur.</p>
+        <div class="ob-features">
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🌟</div>
+            <div class="ob-feat-text"><strong>Bu günün dərsi hazırdır</strong><span>Aşağı düymə ilə aç</span></div>
+          </div>
+          <div class="ob-feat">
+            <div class="ob-feat-icon">🏆</div>
+            <div class="ob-feat-text"><strong>XP qaz, səviyyə al</strong><span>Meraqlıdan Müdrikə qədər</span></div>
+          </div>
+        </div>
+        <div class="ob-dots">
+          <div class="ob-dot"></div>
+          <div class="ob-dot"></div>
+          <div class="ob-dot active"></div>
+        </div>
+        <button class="ob-cta" onclick="obFinish()">Günün dərsinə bax 🚀</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PWA INSTALL CARD (Android/Desktop) -->
+<div class="pwa-install-card" id="pwaInstallCard">
+  <div class="pwa-card-top">
+    <div class="pwa-card-app-icon">B</div>
+    <div class="pwa-card-info">
+      <strong>Bugün nə öyrənim?</strong>
+      <span>Pulsuz · Offline · Ana ekranda</span>
+    </div>
+  </div>
+  <div class="pwa-card-steps">
+    <div class="pwa-card-step">
+      <div class="pwa-step-num done">✓</div>
+      <span>Sayta daxil oldun</span>
+    </div>
+    <div class="pwa-card-step">
+      <div class="pwa-step-num">2</div>
+      <span>Aşağıdakı düyməyə bas</span>
+    </div>
+    <div class="pwa-card-step">
+      <div class="pwa-step-num">3</div>
+      <span>Ana ekranda görünəcək!</span>
+    </div>
+  </div>
+  <div class="pwa-card-btns">
+    <button class="pwa-install-btn" onclick="pwaInstall()">📲 Yüklə — pulsuz</button>
+    <button class="pwa-dismiss-btn" onclick="pwaDismiss()">✕</button>
+  </div>
+</div>
+
+<!-- iOS INSTALL HINT -->
+<div class="ios-hint" id="iosHint">
+  <h4>Ana ekrana əlavə et 📱</h4>
+  <p>Bu saytı telefona yüklə — internet olmadan da işləyir, sanki real app-dır.</p>
+  <div class="ios-steps">
+    <div class="ios-step"><span class="ios-step-icon">⬆️</span><span>Aşağıdakı paylaşma düyməsinə bas</span></div>
+    <div class="ios-step"><span class="ios-step-icon">➕</span><span>"Ana Ekrana Əlavə Et" seçimini tap</span></div>
+    <div class="ios-step"><span class="ios-step-icon">✅</span><span>"Əlavə Et" düyməsinə bas</span></div>
+  </div>
+  <button class="ios-hint-close" onclick="document.getElementById('iosHint').classList.remove('show');document.getElementById('iosArrow').classList.remove('show')">Anladım</button>
+</div>
+<div class="ios-arrow" id="iosArrow">👇</div>
+
+<!-- NOTIFICATION PROMPT -->
+<div class="notif-prompt" id="notifPrompt">
+  <div class="notif-prompt-icon">🔔</div>
+  <strong>Gündəlik xatırlatma</strong>
+  <p>Hər gün saat 09:00-da yeni konseptini öyrənmək üçün bildiriş al.</p>
+  <div class="notif-prompt-btns">
+    <button class="notif-yes" onclick="requestNotifPermission()">Aktivləşdir</button>
+    <button class="notif-no" onclick="dismissNotifPrompt()">Yox, sağ ol</button>
+  </div>
+</div>
+
+<!-- UPDATE BANNER -->
+<div class="update-banner" id="updateBanner">
+  <span>🎉 Yeni versiya mövcuddur!</span>
+  <button class="update-btn" onclick="applyUpdate()">Yenilə</button>
+  <button class="update-btn" onclick="document.getElementById('updateBanner').classList.remove('show')" style="background:transparent;opacity:.6">Sonra</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   50 LESSONS DATA
+═══════════════════════════════════════════════════════ */
+const concepts = [
+{
+  num:"01", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Psixologiya",cls:"tag-psych"}],
+  title:"İtki Qorxusu", subtitle:"Niyə uduzduğumuz qazandığımızdan iki dəfə ağır gəlir",
+  explanation:`<strong>Prospect Theory</strong> psixoloqlar Daniel Kahneman və Amos Tversky tərəfindən kəşf edildi: insanlar eyni miqdar itki və qazancı <strong>eyni şəkildə qiymətləndirmir</strong>. 100 manat itirmənin psixoloji ağırlığı, 100 manat qazanmaqdan <strong>2 dəfə</strong> güclüdür.`,
+  example:`<strong>Nümunə:</strong> "50 manat tapsan necə sevinərsən?" sualına verdiyin cavab, "50 manat itirəndə necə kədərlənirsən?" sualının yarısı qədər emosionaldır. Bu səbəbdən insanlar zərərli səhmlərini satmır — itkini gerçəkləşdirmək istəmirlər.`,
+  insight:`<strong>Praktik nəticə:</strong> Qərar verərkən özünə sor: "Mən bu seçimi qazanmaq üçün edirəm, yoxsa itirmək qorxusundanmı?" İtki qorxusu tərəfindədirsə, yenidən düşün.`,
+  category:"econ",
+  quiz:{q:"İtki qorxusu nəzəriyyəsinə görə 100 manat itirmənin ağırlığı neçə manat qazanmağa bərabərdir?",opts:["50 manata","100 manata","200 manata ✓","500 manata"],correct:2,feedback:"Düzdür! Araşdırmalar göstərir ki, itkinin psixoloji ağırlığı eyni miqdar qazancdan təxminən 2 dəfə güclüdür.",wrongFeedback:"Doğru cavab C idi. Kahneman və Tversky: itkinin ağırlığı qazancdan 2x güclüdür."}
+},
+{
+  num:"02", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Davranış",cls:"tag-min"}],
+  title:"Dunning-Kruger Effekti", subtitle:"Bilməyənlər niyə özünü ən bilən hesab edir",
+  explanation:`<strong>Dunning-Kruger effekti</strong> — az bilik sahiblərinin öz bacarıqlarını <strong>həddindən artıq qiymətləndirməsi</strong>, həqiqi ekspertlərin isə özünə şübhə ilə yanaşması hadisəsidir. Paradoks: <strong>bilmədiyini bilmək üçün bilmək lazımdır</strong>.`,
+  example:`<strong>Nümunə:</strong> Bir günlük gitar dərsi alan biri "bu çox asandır" deyir. 10 illik musiqiçi isə "hələ çox şey öyrənmək lazımdır" deyir. Yeni başlayanlar çətinliklərindən xəbərsizdir çünki hələ onu görmürlər.`,
+  insight:`<strong>Antidot:</strong> Yeni sahəyə girəndə "bilmirəm" deməyi öyrən. "Bilmirəm" — zəiflik deyil, dürüstlükdür. Ən yaxşı öyrənənlər daim özünü yenidən yeni başlayan kimi görür.`,
+  category:"psych",
+  quiz:{q:"Dunning-Kruger effektinə görə hansı qrup öz bacarıqlarını ən çox şişirdir?",opts:["Ekspertlər","Az bilik sahibləri ✓","Orta səviyyəlilər","Heç kim"],correct:1,feedback:"Düzdür! Az bilik sahibləri — nəyi bilmədiklərini bilmədikləri üçün özlərini həddindən yüksək qiymətləndirirlər.",wrongFeedback:"B düzdür. Az bilənlər öz çatışmazlıqlarını görə bilmir — çünki onları görüb qiymətləndirmək üçün bilik lazımdır."}
+},
+{
+  num:"03", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Məhsuldarlıq",cls:"tag-min"}],
+  title:"Pareto Prinsipi", subtitle:"80% nəticə, 20% səbəbdən gəlir",
+  explanation:`İtalyan iqtisadçı <strong>Vilfredo Pareto</strong> 1896-da müşahidə etdi: İtaliya torpaqlarının <strong>80%-i əhalinin 20%-inə</strong> məxsusdur. Bu nisbət demək olar ki, hər sahədə özünü göstərdi — effektlərin 80%-i adətən səbəblərin yalnız <strong>20%-indən</strong> qaynaqlanır.`,
+  example:`<strong>Nümunə:</strong> Şirkət gəlirinin 80%-i müştərilərin 20%-indən gəlir. Proqram xətalarının 80%-i kodun 20%-indədir. Geyimlərinizin 80%-ni zamanın yalnız 20%-lik hissəsini geyinirsiniz.`,
+  insight:`<strong>Tətbiqi düstur:</strong> Nəticələrinin 80%-ini yaradan 20%-lik fəaliyyəti tap. Enerjini oraya yönəlt. Qalanı minimuma endir. Az ilə çox əldə et.`,
+  category:"econ",
+  quiz:{q:"Pareto Prinsipini ən düzgün tətbiq edən hansıdır?",opts:["Bütün müştərilərə eyni resursu ayırmaq","Ən çox gəlir gətirən 20% müştəriyə daha çox diqqət vermək ✓","İşlərin 80%-ni tamamladıqda dayanmaq","20% endirim tətbiq etmək"],correct:1,feedback:"Əla! 20%-i tapıb ona fokuslanmaq — Pareto Prinsipinin mahiyyəti budur.",wrongFeedback:"B düzdür. Ən çox nəticə yaradan kiçik qrupu tapıb ona fokuslanmaq — 80/20 qaydası budur."}
+},
+{
+  num:"04", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Qərar",cls:"tag-min"}],
+  title:"Konfirmasiya Qərəzi", subtitle:"Yalnız istədiyini görmək",
+  explanation:`<strong>Konfirmasiya qərəzi</strong> — insanların artıq inandığı şeyləri dəstəkləyən məlumatı aktiv şəkildə axtarıb, zidd məlumatları isə görmək istəməməsidir. Beyin bu filteri <strong>avtomatik qurur</strong> — fərqindəlik olmadan görünmür.`,
+  example:`<strong>Nümunə:</strong> Bir siyasi namizədi sevən biri yalnız onun müvəffəqiyyətlərini paylaşan xəbərləri oxuyur. Eyni şəxsi sevməyən biri yalnız tənqid edən xəbərləri izləyir. Hər ikisi "sadəcə həqiqəti" gördüyünü düşünür.`,
+  insight:`<strong>Antidot:</strong> Bir inancını test etmək üçün bilinərək ona zidd arqumentlər axtar. "Mən yanılıramsa nə olar?" sualı beyni fərqli məlumatə açır.`,
+  category:"psych",
+  quiz:{q:"Konfirmasiya qərəzindən qorunmağın ən effektiv yolu hansıdır?",opts:["Yalnız etibarlı mənbələri oxumaq","Öz inanclarını daha güclü müdafiə etmək","Bilinərək özünə zidd olan arqumentləri araşdırmaq ✓","Daha az xəbər izləmək"],correct:2,feedback:"Düzdür! Öz inancına zidd arqumentləri aktiv olaraq axtarmaq — bu, konfirmasiya qərəzinin birbaşa antidotudur.",wrongFeedback:"C düzdür. Öz inancına qarşı çıxan dəlilləri bilinərək araşdırmaq — beyni açıq saxlamanın yolu budur."}
+},
+{
+  num:"05", tags:[{label:"Tarix",cls:"tag-hist"},{label:"İqtisadiyyat",cls:"tag-econ"}],
+  title:"İpək Yolu", subtitle:"Dünyanı birləşdirən ticarət şəbəkəsi",
+  explanation:`<strong>İpək Yolu</strong> — Çindən Aralıq dənizinə uzanan, e.ə. 2-ci əsrdən 15-ci əsrə qədər fəal olan tarixi ticarət şəbəkəsidir. Yalnız ipək deyil, <strong>ədviyyat, ideyalar, dinlər, texnologiyalar və xəstəliklər</strong> də bu yolla hərəkət etdi. Dünya tarixinin ilk "qloballaşması" sayılır.`,
+  example:`<strong>Nümunə:</strong> Kağız, barıt və kompas texnologiyaları Çindən Avropaya İpək Yolu ilə çatdı. Buddizm Hindistandan Çinə, İslam isə ərəb tacirlər vasitəsilə Cənub-Şərqi Asiyaya bu yolla yayıldı.`,
+  insight:`<strong>Daha böyük mənzərə:</strong> İpək Yolu ticarət deyil, sivilizasiyaların dialoqudur. Bugünkü internetin fiziki sələfi — məlumatı, dəyərləri və innovasiyanı dünyaya paylayan şəbəkə.`,
+  category:"hist",
+  quiz:{q:"İpək Yolu vasitəsilə aşağıdakıların hansı Çindən Avropaya keçmədi?",opts:["Kağız istehsalı texnologiyası","Barıt","Demokratiya ideyası ✓","Kompas"],correct:2,feedback:"Düzdür! Demokratiya ideyası Qədim Yunanıstanda formalaşdı. Kağız, barıt və kompas Çindən bu yolla Avropaya çatdı.",wrongFeedback:"C düzdür. Demokratiya Yunanıstanda yarandı, İpək Yoluyla deyil. Kağız, barıt, kompas isə Çindən gəldi."}
+},
+{
+  num:"06", tags:[{label:"Texnologiya",cls:"tag-tech"},{label:"Kompüter",cls:"tag-min"}],
+  title:"Moore Qanunu", subtitle:"Sürətin ikiqat artması niyə dayanır?",
+  explanation:`1965-ci ildə Intel-in həmtəsisçisi <strong>Gordon Moore</strong> müşahidə etdi: mikrosxemdəki tranzistor sayı hər <strong>iki ildən bir ikiqat artır</strong> — xərc demək olar ki, sabit qalır. Bu proqnoz onilliklər boyunca doğru çıxdı.`,
+  example:`<strong>Nümunə:</strong> 1971-ci ildə Intel 4004 prosessoru 2.300 tranzistor daşıyırdı. 2020-ci ildə Apple M1 çipi 16 <em>milyard</em> tranzistor ehtiva edir — 50 ildə ~7 milyonqat artım.`,
+  insight:`<strong>Bugün nə baş verir?</strong> Fiziki limitlərə yaxınlaşdığımız üçün Moore Qanununun klassik forması yavaşlayır. Sahə 3D çiplər, kvant hesablamalarına keçir.`,
+  category:"tech",
+  quiz:{q:"Moore Qanununa görə tranzistor sayı neçə ildən bir ikiqat artır?",opts:["Hər 6 aydan bir","Hər ildən bir","Hər 2 ildən bir ✓","Hər 5 ildən bir"],correct:2,feedback:"Doğrudur! Gordon Moore-un 1965-ci ildəki müşahidəsi: hər 2 ildən bir tranzistor sayı ikiqat artır.",wrongFeedback:"C düzdür. Hər 2 ildən bir — bu ritm 1960-lardan 2010-lara qədər texnologiyanın yol xəritəsi oldu."}
+},
+{
+  num:"07", tags:[{label:"İş Dünyası",cls:"tag-biz"},{label:"Strategiya",cls:"tag-min"}],
+  title:"Blue Ocean Strategiyası", subtitle:"Rəqabətsiz bazar necə yaradılır",
+  explanation:`<strong>Blue Ocean (Mavi Okean)</strong> strategiyası — mövcud bazarda rəqabət etmək əvəzinə, tamamilə yeni bazar sahəsi yaratmaqdır. Qırmızı okean rəqiblərlə dolu dənizdir, mavi okean isə <strong>rəqabətsiz, geniş imkanlar</strong> sahəsidir.`,
+  example:`<strong>Nümunə:</strong> Cirque du Soleil klassik sirkə rəqib olmadı — uşaq tamaşasını yetkin sənət performansına çevirdi. Apple iPhone-u mövcud telefona yeni xüsusiyyət əlavə etmədi — tamamilə yeni kateqoriya yaratdı.`,
+  insight:`<strong>Düstur:</strong> Sənayenin standart funksiyalarından hansını azaltmaq, hansını artırmaq, hansını silmək, hansını yaratmaq olar? Bu 4 sual sizi mavi okean istiqamətinə aparır.`,
+  category:"biz",
+  quiz:{q:"Blue Ocean strategiyası nəyi nəzərdə tutur?",opts:["Rəqiblərlə daha aşağı qiymətlə rəqabət etmək","Tamamilə yeni, rəqabətsiz bazar sahəsi yaratmaq ✓","Ən böyük bazara daxil olmaq","Mövcud məhsulu yaxşılaşdırmaq"],correct:1,feedback:"Əla! Mavi okean — rəqabət etmək deyil, rəqabəti aradan qaldırmaq deməkdir.",wrongFeedback:"B düzdür. Blue Ocean — bazarı dəyişdirmək, onun içindən çıxmaq, tamamilə yeni kateqoriya yaratmaqdır."}
+},
+{
+  num:"08", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Sosial",cls:"tag-min"}],
+  title:"Sosial Sübut", subtitle:"Niyə başqaları nə edərsə, biz də edirik",
+  explanation:`<strong>Sosial sübut (social proof)</strong> — insanların qeyri-müəyyən vəziyyətdə başqalarının davranışına baxıb özlərini istiqamətləndirdiyi psixoloji mexanizmdir. "Çox insan bunları edirsə, düzgün olmalıdır" düşüncəsi ilə fəaliyyət göstərir.`,
+  example:`<strong>Nümunə:</strong> Restoran seçərkən boş restorana deyil, dolu olana girirsən. Amazon-da ən çox rəy alan məhsulu seçirsən. TikTok-da çox bəyənilən video sənin diqqətini daha çox çəkir.`,
+  insight:`<strong>Özün üçün qal:</strong> Növbəti dəfə "hamı belə edir" düşüncəsilə qərar verirsənsə, dur. Sor: "Bu mənim üçün doğrudurmu?" Sürü effekti bizi həmişə doğruya aparmır.`,
+  category:"psych",
+  quiz:{q:"Sosial sübut effekti ən güclü olur...",opts:["İnsanlar tam əmin olduqda","Qeyri-müəyyənlik vəziyyətlərində ✓","Tək olanda","Ekspertlərə güvənəndə"],correct:1,feedback:"Düzdür! Qeyri-müəyyənlik vəziyyətlərində biz başqalarına baxırıq — çünki nə edəcəyimizi bilmirik.",wrongFeedback:"B düzdür. Qeyri-müəyyənlik vəziyyəti sosial sübutun ən güclü işlədiyi andır — biz istiqamət axtarırıq."}
+},
+{
+  num:"09", tags:[{label:"Tarix",cls:"tag-hist"},{label:"Fəlsəfə",cls:"tag-phil"}],
+  title:"Stoisizm", subtitle:"Nəyi dəyişə biləcəyinə fokuslan",
+  explanation:`<strong>Stoisizm</strong> Qədim Yunanıstanda yaranmış, Romada çiçəklənmiş fəlsəfi məktəbdir. Əsas prinsipi: <strong>yalnız öz nəzarətindəki şeylərə enerji ver</strong> — düşüncələrinə, reaksiyalarına, seçimlərinə. Xarici hadisələr — iqlim, başqaları, şans — nəzarətindən çıxır.`,
+  example:`<strong>Nümunə:</strong> Marcus Aurelius — Roma imperatorluğunu idarə edərkən gündəlik "Meditasiyalar" yazdı. "Sənə pis danışan birini dəyişdirə bilməzsən. Öz reaksiyanı dəyişdirə bilərsən."`,
+  insight:`<strong>Günlük tətbiq:</strong> Hər gün bir sual: "Bu mənim nəzarətimdəmi?" Əgər yoxsa — onu burax. Əgər bəlidirsə — ona tam fokuslan.`,
+  category:"hist",
+  quiz:{q:"Stoisizmin əsas prinsipi hansıdır?",opts:["Hər şeydən zövq al","Yalnız öz nəzarətindəki şeylərə fokuslan ✓","Emosiyalarını gizlət","Güclüyə boyun əy"],correct:1,feedback:"Düzdür! Stoisizm: nəzarətindən kənar şeylərə enerji xərcləmə. Öz düşüncəni, reaksiyanı, seçimini idarə et.",wrongFeedback:"B düzdür. Stoisizmin mərkəzi ideyası: nəzarət edə bildiklərinə fokuslan, qalanını burax."}
+},
+{
+  num:"10", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Qərar",cls:"tag-min"}],
+  title:"Alternativ Dəyər", subtitle:"Hər seçim başqa seçimdən imtinandır",
+  explanation:`<strong>Alternativ dəyər (opportunity cost)</strong> — bir seçim edərkən imtina etdiyin ən yaxşı alternativin dəyəridir. İqtisadiyyatın əsas konsepti: hər "bəli" bir "xeyir"i ehtiva edir. Pul xərcləmək deyil, <strong>vaxt belə bu qanuna tabedir</strong>.`,
+  example:`<strong>Nümunə:</strong> 1000 manatı bankda saxlasaydın 5% faiz qazanardın. Onu dostuna verdinmi? Alternativ dəyərin 50 manat faizdir. Tibb oxumaq əvəzinə mühəndis oldunsa — alternativ dəyərin həkim kariyerasıdır.`,
+  insight:`<strong>Düşüncə alışqanlığı:</strong> Hər böyük qərar verərkən soruş: "Bu seçim etdiyim üçün nədən imtina edirəm?" Cavab — qərarının gerçək qiymətidir.`,
+  category:"econ",
+  quiz:{q:"Alternativ dəyər nədir?",opts:["Bir məhsulun bazar qiyməti","İmtina etdiyin ən yaxşı alternativin dəyəri ✓","Gözlənilməz xərclər","Endirim məbləği"],correct:1,feedback:"Əla! Alternativ dəyər — seçim edərkən imtina etdiyin ən yaxşı seçənəyin dəyəridir.",wrongFeedback:"B düzdür. Alternativ dəyər — hər 'bəli'nin arxasındakı 'xeyir'in qiymətidir."}
+},
+{
+  num:"11", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Motivasiya",cls:"tag-min"}],
+  title:"Flow Vəziyyəti", subtitle:"Zamansız, əziyyətsiz konsentrasiya",
+  explanation:`Psixoloq <strong>Mihaly Csikszentmihalyi</strong>nin kəşf etdiyi <strong>flow</strong> — insanın bir fəaliyyətə tamamilə qərq olduğu, zaman hissini itirdiyi, əziyyətsiz cəmləşdiyi vəziyyətdir. Bu zaman bacarıq səviyyəsi ilə çətinlik balanslanmış olmalıdır.`,
+  example:`<strong>Nümunə:</strong> Müzisyent bir parçanı ifa edərkən "necə çaldığını" düşünmür — sadəcə çalır. Oyunçu oyunda tamam batır. Yazıçı yazmağa başlayır, baxanda 3 saat keçib.`,
+  insight:`<strong>Flow-ya girmənin düstur:</strong> Tapşırıq bacarığından çox asandırsa — can sıxır. Çox çətinsə — narahat edir. Tarazlıq nöqtəsini tap — orada flow başlayır.`,
+  category:"psych",
+  quiz:{q:"Flow vəziyyəti üçün ən vacib şərt hansıdır?",opts:["Tam istirahət","Çox rahat bir mühit","Bacarıq və çətinliyin balansı ✓","Xarici ödül"],correct:2,feedback:"Düzdür! Bacarıq səviyyəsi ilə tapşırığın çətinliyi uyğun gəldikdə flow yaranır.",wrongFeedback:"C düzdür. Flow — çox asan (sıxıntı) və çox çətin (narahatlıq) arasındakı tarazlıq nöqtəsidir."}
+},
+{
+  num:"12", tags:[{label:"Elm",cls:"tag-sci"},{label:"Psixologiya",cls:"tag-psych"}],
+  title:"Plasebo Effekti", subtitle:"İnanc necə bədəni dəyişir",
+  explanation:`<strong>Plasebo effekti</strong> — təsir etməyən bir müalicəyə inanmanın gerçək fizioloji dəyişikliklər yaratmasıdır. Beyin "bu köməkçidir" inandığında, <strong>endorfin, dopamin</strong> kimi real kimyəvi maddələr buraxır.`,
+  example:`<strong>Nümunə:</strong> Klinik sınaqda xəstələrin bir qrupu şəkər həbi aldı — "bu ağrı kəsicidir" deyildi. Onların 30-40%-i gerçək ağrı azalması yaşadı. Qan analizlərində dəyişiklik var idi.`,
+  insight:`<strong>Güclü nəticə:</strong> İnanclar bioloji gerçəkliklər yaradır. "Yaxşı olacağam" düşüncəsi — sadəcə nikbinlik deyil, kimyəvi proses başladır. Bu yüzilliyin ən böyük kəşflərindən biridir.`,
+  category:"sci",
+  quiz:{q:"Plasebo effektinin gerçək olduğunun sübutu nədir?",opts:["Xəstələrin bunu uydurması","Ölçülə bilən fizioloji dəyişikliklərin müşahidəsi ✓","Həkimlərin etibarlılığı","Müalicənin qiyməti"],correct:1,feedback:"Əla! Ölçülə bilən fizioloji dəyişikliklər — endorfin, dopamin, hətta bəzi hallarda immun reaksiya — plasebonun gerçəkliyini sübut edir.",wrongFeedback:"B düzdür. Plasebo effektinin gerçəkliyi ölçülə bilən fizioloji dəyişikliklərlə təsdiqlənib."}
+},
+{
+  num:"13", tags:[{label:"İş Dünyası",cls:"tag-biz"},{label:"Strategiya",cls:"tag-min"}],
+  title:"Birinci Prinsiplər Düşüncəsi", subtitle:"Elon Musk-un problem həll metodu",
+  explanation:`<strong>Birinci prinsiplər düşüncəsi</strong> — bir problemi ən əsas həqiqətlərə parçalamaq və oradan sıfırdan yenidən qurmaq metodudur. Analogiyaya arxalanmaq əvəzinə, <strong>"Bu niyə belə olmalıdır?"</strong> sualı ilə hər fərziyyəni sorğulamaqdır.`,
+  example:`<strong>Nümunə:</strong> Elon Musk rakete baxanda "raketlər həmişə bahalı olub" demədi. Soruşdu: "Raket nədən ibarətdir? Bu materialların bazar qiyməti nədir?" Rəqiblərindən 10x ucuz raketi bu yolla qurdu.`,
+  insight:`<strong>Özünə sual:</strong> Bir problemlə üzləşəndə soruş: "Bu qaydanı kim qoyub? Niyə bu cür olmaq məcburiyyəti var?" Çox "qaçılmaz" çətinlik — yalnız ənənədir.`,
+  category:"biz",
+  quiz:{q:"Birinci prinsiplər düşüncəsi nəyi rədd edir?",opts:["Riyaziyyat istifadəsini","Analogiya əsaslı düşüncəni ✓","Eksperiment etməyi","Rəqib analizi"],correct:1,feedback:"Düzdür! Birinci prinsiplər — 'başqaları belə edir, mən də belə edim' analogiya düşüncəsinə qarşıdır.",wrongFeedback:"B düzdür. Bu metod analogiyaya arxalanmağı rədd edib hər şeyi sıfırdan sorgulayır."}
+},
+{
+  num:"14", tags:[{label:"Tarix",cls:"tag-hist"},{label:"Elm",cls:"tag-sci"}],
+  title:"Sənaye İnqilabı", subtitle:"Dünya necə 200 ildə dəyişdi",
+  explanation:`<strong>Sənaye İnqilabı</strong> (1760–1840) — Britaniyada başlayan, buxar mühərrikinin kəşfi ilə sürətlənən iqtisadi-sosial transformasiyadır. Min illər boyu aqrar olan cəmiyyət <strong>10 nəsil içində</strong> şəhərli-sənaye cəmiyyətinə çevrildi.`,
+  example:`<strong>Nümunə:</strong> 1800-cü ildə Britaniyada işçilərin 80%-i kənd təsərrüfatında çalışırdı. 1900-cü ildə bu rəqəm 10%-ə endi. Əvəzinə zavod, dəmir yolu, telekommunikasiya milyon iş yeri yaratdı.`,
+  insight:`<strong>Paralel bugün:</strong> Biz AI İnqilabının içindəyik. Sənaye İnqilabı kənd fəhlələrini fabrik işçisinə çevirdi. AI isə rutin əqli işi avtomatlaşdırır. "Öyrənə bilən" olun.`,
+  category:"hist",
+  quiz:{q:"Sənaye İnqilabı ilk hansı ölkədə başladı?",opts:["Fransa","Almaniya","Britaniya ✓","ABŞ"],correct:2,feedback:"Düzdür! Britaniya — buxar mühərriki, toxuculuq fabrikləri, kömür mədənləri ilə sənaye inqilabının beşiyi oldu.",wrongFeedback:"C düzdür. Sənaye İnqilabı 1760-cı illərdə Britaniyada başladı — buxar mühərriki onun əsas hərəkətverici qüvvəsi oldu."}
+},
+{
+  num:"15", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Davranış",cls:"tag-min"}],
+  title:"Vərdişin Döngəsi", subtitle:"Pis vərdişlər niyə çətinliklə dəyişir",
+  explanation:`Nevroloq <strong>Charles Duhigg</strong>ə görə hər vərdiş 3 hissədən ibarətdir: <strong>Tetikləyici → Rutin → Mükafat</strong>. Beyin bu döngəni avtomatlaşdırır ki, enerji qənaət etsin. Vərdişi dəyişmək üçün — rutini dəyişmək, tetikləyici və mükafatı saxlamaq ən effektiv üsuldur.`,
+  example:`<strong>Nümunə:</strong> İş yükündə (tetikləyici) şokolad yeyirsən (rutin) → rahatlaşırsan (mükafat). Bunu dəyişmək üçün: eyni tetikləyici + eyni mükafat + yeni rutin (2 dəq nəfəs egzersizi).`,
+  insight:`<strong>Açar fikir:</strong> Pis vərdişi "silmək" çətindir. Onu <strong>əvəz etmək</strong> mümkündür. Tetikləyici → eyni mükafat, yeni rutin.`,
+  category:"psych",
+  quiz:{q:"Vərdiş döngəsinin düzgün ardıcıllığı hansıdır?",opts:["Rutin → Mükafat → Tetikləyici","Mükafat → Tetikləyici → Rutin","Tetikləyici → Rutin → Mükafat ✓","Rutin → Tetikləyici → Mükafat"],correct:2,feedback:"Düzdür! Tetikləyici → Rutin → Mükafat — bu 3 mərhələ hər vərdişin əsasıdır.",wrongFeedback:"C düzdür. Vərdiş döngəsi: Tetikləyici (işarə) → Rutin (davranış) → Mükafat (duyğu)."}
+},
+{
+  num:"16", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Maliyyə",cls:"tag-min"}],
+  title:"Mürəkkəb Faiz", subtitle:"Dünyada 8-ci möcüzə",
+  explanation:`<strong>Mürəkkəb faiz (compound interest)</strong> — ana pulun üzərinə qazanılan faizdən yenidən faiz qazanmaq mexanizmidir. Vaxt keçdikcə bu güc eksponensial böyüyür. Albert Einstein-ın ona "dünyanın 8-ci möcüzəsi" dediyi deyilir.`,
+  example:`<strong>Nümunə:</strong> 20 yaşında 1000 manat investisiya etsən, illik 8% artımla 65 yaşında bu 31.000 manata çevrilir. 40 yaşında başlasaydın, yalnız 6.800 manat olardı. <strong>20 il fərqi = 4.5x fərq.</strong>`,
+  insight:`<strong>Vaxt — ən böyük aktivdir:</strong> Pul deyil, vaxt mürəkkəb faizin ən güclü elementidir. "Mən gəncəm, vaxtım var" düşüncəsi — ən bahalı fikir ola bilər.`,
+  category:"econ",
+  quiz:{q:"Mürəkkəb faizin adi faizə nisbətdə üstünlüyü nədir?",opts:["Daha yüksək faiz dərəcəsi","Faizdən yenidən faiz qazanmaq ✓","Risksiz olmaq","Hər ay ödənilmək"],correct:1,feedback:"Düzdür! Mürəkkəb faiz — qazandığın faizdən yenidən faiz qazanmaqdır. Zamanla bu güc eksponensial böyüyür.",wrongFeedback:"B düzdür. Mürəkkəb faiz — faizdən faiz qazanmaq. Bu mexanizm vaxt keçdikcə inanılmaz böyümə yaradır."}
+},
+{
+  num:"17", tags:[{label:"Elm",cls:"tag-sci"},{label:"Psixologiya",cls:"tag-psych"}],
+  title:"Neyron Plastikliyi", subtitle:"Beyin ömür boyu dəyişə bilər",
+  explanation:`<strong>Neyron plastikliyi (neuroplasticity)</strong> — beynin yeni sinir əlaqələri qurmaq, mövcud olanları yenidən strukturlaşdırmaq qabiliyyətidir. Köhnə inancın əksinə, beyin <strong>ömür boyu dəyişə bilər</strong> — yalnız uşaqlıqda deyil.`,
+  example:`<strong>Nümunə:</strong> Taksist olan London şoförləri illər içindəki daim karta baxmamaqla naviqasiya üçün istifadə olunan hippokampuslarının fiziki olaraq böyüdüyü sübut edildi. Yeni vərdiş — yeni sinir yolu.`,
+  insight:`<strong>Praktik güc:</strong> "Mən belə doğulmuşam" — bu yanlış inancdır. Hər yeni vərdiş, hər öyrənilmiş bacarıq beyni fiziki dəyişdirir. Dəyişmək mümkündür — amma zaman tələb edir.`,
+  category:"sci",
+  quiz:{q:"Neyron plastikliyi nəyi sübut edir?",opts:["Beyin yalnız uşaqlıqda dəyişir","Beyin ömür boyu yenidən qurulan qabiliyyətə sahibdir ✓","Yetkinlər yeni şey öyrənə bilmir","IQ sabitdir"],correct:1,feedback:"Düzdür! Beyin ömür boyu yeni sinir əlaqələri qura bilir. Öyrənmək beyni fiziki dəyişdirir.",wrongFeedback:"B düzdür. Neyron plastikliyi: beyin ömür boyu yeni əlaqələr qura bilir. 'Dəyişə bilmirəm' inancı nöroloqlar tərəfindən çürüdülüb."}
+},
+{
+  num:"18", tags:[{label:"İş Dünyası",cls:"tag-biz"},{label:"Maliyyə",cls:"tag-min"}],
+  title:"Kapital Allokasiyası", subtitle:"Pulu harada tutmaq ən vacib qərardır",
+  explanation:`<strong>Kapital allokasiyası</strong> — bir şirkətin (ya da şəxsin) mövcud resurslarını ən yüksək gəlir gətirəcək sahələrə yönəltmə qabiliyyətidir. Warren Buffett bu bacarığı CEO-nun ən vacib məharetidir deyir — çünki hər başqa bacarıq öyrədilə bilər, bu isə az insanda var.`,
+  example:`<strong>Nümunə:</strong> Apple 2000-lərdə kasıb idi. Steve Jobs qayıtdı, əksər məhsul xətlərini kəsdi, bütün resursu iPod-a yönəltdi. Bu allokasiya qərarı şirkəti xilas etdi.`,
+  insight:`<strong>Şəxsi maliyyə üçün:</strong> Pul qazanmaq deyil — onu hara yönəltmək daha vacibdir. Hər ay "bu pul ən yaxşı harada işləyər?" sualı vərdişi düşüncəni dəyişdirir.`,
+  category:"biz",
+  quiz:{q:"Kapital allokasiyasında ən vacib sual hansıdır?",opts:["Nə qədər pulum var?","Başqaları neyə invest edir?","Resursumu harada ən çox gəlir gətirir? ✓","Nə vaxt satmalıyam?"],correct:2,feedback:"Düzdür! 'Ən yüksək gəliri harada qazanaram?' — kapital allokasiyasının özəyidir.",wrongFeedback:"C düzdür. Kapital allokasiyası: mövcud resursu ən yüksək gəlir gətirəcək yerə yönəltmə sənətidir."}
+},
+{
+  num:"19", tags:[{label:"Tarix",cls:"tag-hist"}],
+  title:"Osmanlı İmperiyası", subtitle:"600 il ayakta qalan dövlət sistemi",
+  explanation:`<strong>Osmanlı İmperiyası</strong> (1299–1922) — 3 qitəyə yayılan, 600 ilə yaxın davam edən tarixdəki ən uzunömürlü imperiyalardan biridir. Fərqli dinlərə, dillərə hörmət edən <strong>millet sistemi</strong> çoxmillətli idarəetmənin modeliydi.`,
+  example:`<strong>Nümunə:</strong> Osmanlı ərazisindəki xristianlar, yəhudilər, müsəlmanlar öz din məhkəmələri, öz dini liderləri ilə paralel daxili sistemlər qurmuşdular. Bu çoxculluq imperiyanı 6 əsrdən çox yaşatdı.`,
+  insight:`<strong>Müasir dərs:</strong> Çoxluğu idarə etmək üçün sürtünməni minimuma endirmək lazımdır. Osmanlı millet sistemi — müasir çoxmədəniyyətli idarəetmə fikirlərinin sələflərindan biridir.`,
+  category:"hist",
+  quiz:{q:"Osmanlı millet sistemi nə idi?",opts:["Hərbi ordu sistemi","Fərqli dinlərə öz idarəetmə haqqı tanıyan sistem ✓","Vergi toplama metodu","Əraziləri bölüşdürmə üsulu"],correct:1,feedback:"Düzdür! Millet sistemi: fərqli din icmalarına öz daxili idarəetmə, din məhkəmə hüququ — çoxmillətli idarəetmənin modelidir.",wrongFeedback:"B düzdür. Millet sistemi: Osmanlıda fərqli dinlər öz icma idarəetmə hüququnu qoruyurdu."}
+},
+{
+  num:"20", tags:[{label:"Texnologiya",cls:"tag-tech"},{label:"İş Dünyası",cls:"tag-biz"}],
+  title:"Şəbəkə Effekti", subtitle:"Niyə WhatsApp-ı hamı istifadə edir",
+  explanation:`<strong>Şəbəkə effekti</strong> — bir məhsulun dəyərinin istifadəçi sayı artdıqca artmasıdır. Telefon bir istifadəçi üçün dəyərsizdir. 2 istifadəçi üçün dəyər var. 1 milyon üçün — <strong>əvəzedilməz</strong>dir.`,
+  example:`<strong>Nümunə:</strong> WhatsApp-ı bütün dostların istifadə edir. Sən başqa mesajlaşma tətbiqinə keçsən — heç kimi tapa bilməzsən. Bu şəbəkə effekti WhatsApp-ı "locked in" etdi.`,
+  insight:`<strong>Biznes üstünlüyü:</strong> Şəbəkə effekti yaradan şirkətlər xəndəklidir — qorumaq üçün böyük varlıq. Facebook, Visa, Amazon Marketplace hamısı şəbəkə effekti ilə qurulub.`,
+  category:"tech",
+  quiz:{q:"Şəbəkə effektinin əsas xüsusiyyəti nədir?",opts:["Məhsulun texniki keyfiyyəti artır","İstifadəçi sayı artdıqca məhsulun dəyəri artır ✓","Qiymət aşağı düşür","Reklam xərcləri azalır"],correct:1,feedback:"Düzdür! Şəbəkə effekti: daha çox istifadəçi → daha çox dəyər → daha çox istifadəçi. Bu güclü döngü yaradır.",wrongFeedback:"B düzdür. Şəbəkə effekti: hər yeni istifadəçi digər bütün istifadəçilər üçün dəyər artırır."}
+},
+{
+  num:"21", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Qərar",cls:"tag-min"}],
+  title:"Seçim Paradoksu", subtitle:"Çox seçim niyə bizi narahat edir",
+  explanation:`Psixoloq <strong>Barry Schwartz</strong> araşdırdı: seçim sayı artdıqca insanlar daha az məmnun olur. Çünki hər seçim "başqa seçim daha yaxşı olardı" hissi doğurur. Bu <strong>paraliz, peşmançılıq və narahatlığa</strong> gətirir.`,
+  example:`<strong>Nümunə:</strong> Supermarketdə 6 növ mürəbbə olan stendə gələn müştərilər 24 növ olan stendəkilərdən daha çox satın alırdı. Az seçim — daha çox qərar, daha az peşmançılıq.`,
+  insight:`<strong>Güclü olan qayda:</strong> "Yaxşı qərar" arayışını "kifayət qədər yaxşı" ilə əvəz et. Satisficer (kifayəti qəbul edən) olmaq, maximizer (ən yaxşısını axtaran) olmaqdan daha xoşbəxt edir.`,
+  category:"psych",
+  quiz:{q:"Seçim Paradoksuna görə daha çox seçim...",opts:["Həmişə daha yaxşı nəticə verir","Daha az məmnunluq gətirir ✓","İnsanları daha xoşbəxt edir","Qərarı asanlaşdırır"],correct:1,feedback:"Düzdür! Çox seçim — daha çox peşmançılıq potensialı. Bu, paradoksal şəkildə insanı daha az məmnun edir.",wrongFeedback:"B düzdür. Schwartz: çox seçim peşmançılığı artırır, qərardan sonra 'başqası daha yaxşı idi' hissini gücləndirir."}
+},
+{
+  num:"22", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Tarix",cls:"tag-hist"}],
+  title:"Sübut Edilmiş Pul", subtitle:"Bitcoin niyə qızıla bənzəyir",
+  explanation:`Pul 3 funksiyanı yerinə yetirməlidir: <strong>dəyər anbarı, mübadilə vasitəsi, hesab vahidi</strong>. Tarix boyunca insanlar qızılı, gümüşü, duz, sümükləri pul kimi istifadə etdi. Bugün fiat pul (kağız pul) bu funksiyaları yerinə yetirir — amma hökumət güvəncəsinə dayanır.`,
+  example:`<strong>Nümunə:</strong> Weimar Almaniyasında 1923-cü ildə çörəyin qiyməti bir gün içində 2x artırdı. İnsanlar alış-verişə çıxanda pulu el arabası ilə daşıyırdılar. "Güvənilir pul" anlayışı nə qədər vacibdir — bu hadisə göstərdi.`,
+  insight:`<strong>Mühüm sual:</strong> Pul niyə dəyərlidir? Çünki hamı ona dəyər verir. Bu güvən itəndə — pul dəyər itirir. İqtisadiyyatın bünövrəsi — bu inamdır.`,
+  category:"econ",
+  quiz:{q:"Pulun 3 əsas funksiyasından biri deyil?",opts:["Dəyər anbarı","Mübadilə vasitəsi","Xərc hesablama ✓","Hesab vahidi"],correct:2,feedback:"Düzdür! Xərc hesablama pulun standart funksiyası deyil. Üç əsas: dəyər anbarı, mübadilə vasitəsi, hesab vahidi.",wrongFeedback:"C düzdür. Pulun 3 əsas funksiyası: dəyər anbarı, mübadilə vasitəsi, hesab vahidi. 'Xərc hesablama' onlardan biri deyil."}
+},
+{
+  num:"23", tags:[{label:"Fəlsəfə",cls:"tag-phil"},{label:"Psixologiya",cls:"tag-psych"}],
+  title:"Epiktet-in Dichotomiyası", subtitle:"Nəzarətindəki ilə olmadığını ayırmaq",
+  explanation:`Stoisist filosof <strong>Epiktet</strong> quldur olaraq doğuldu. Öyrətdi ki: hər şey ya <strong>"bizdən asılı" ya da "bizimkindən kənar"</strong>dır. Düşüncəmiz, arzularımız, seçimlərimiz bizdən asılıdır. Ölüm, şöhrət, başqalarının fikirləri — kənar.`,
+  example:`<strong>Nümunə:</strong> İşdə ləğv olundun (kənar). Necə reaksiya verdiyin (bizdən asılı). Xəstələndin (kənar). Onu necə qarşıladığın (bizdən asılı). Epiktet-ə görə azadlıq bu ayrımı görməkdir.`,
+  insight:`<strong>Gündəlik tətbiq:</strong> Bir problem qarşısında dur. Soruş: "Bu mənim nəzarətimdəmi?" Əgər yoxsa — bütün enerji ona getməsin. Əgər bəlidirsə — 100% fokuslan.`,
+  category:"phil",
+  quiz:{q:"Epiktet-ə görə 'bizdən asılı olan' nədir?",opts:["Sağlamlığımız","Başqalarının bizdən xoşu gəlməsi","Öz düşüncə və seçimlərimiz ✓","Nə vaxt öləcəyimiz"],correct:2,feedback:"Düzdür! Epiktet: yalnız öz düşüncəmiz, arzularımız, seçimlərimiz bizdən asılıdır.",wrongFeedback:"C düzdür. Bizdən asılı olan: düşüncəmiz, seçimlərimiz, reaksiyalarımız. Qalan hər şey — kənar."}
+},
+{
+  num:"24", tags:[{label:"Texnologiya",cls:"tag-tech"},{label:"Elm",cls:"tag-sci"}],
+  title:"Kvant Hesablaması", subtitle:"Kompüterlərin növbəti böyük sıçrayışı",
+  explanation:`Klassik kompüterlər 0 ya da 1 işlədən <strong>bit</strong> istifadə edir. Kvant kompüterlər isə eyni zamanda həm 0 həm 1 ola bilən <strong>qubit</strong> istifadə edir — bu "superposition" adlanır. Nəticə: bəzi hesablamalarda <strong>milyonlarla dəfə sürətli</strong> ola bilər.`,
+  example:`<strong>Nümunə:</strong> Bugünkü kompüterlər 300 rəqəmli ədədi çarpazlaşdırmaq üçün kainatın ömründən uzun vaxt lazım olardı. Google-ın kvant kompüteri eyni hesablamanı 200 saniyədə etdi (2019).`,
+  insight:`<strong>Nə dəyişəcək?</strong> Şifrələmə, dərman kəşfi, süni intellekt — kvant hesablaması bütün bu sahələri kökündən dəyişəcək. Hazırlıq üçün "kvant dostu" şifrələr üzərindəki iş artıq başlayıb.`,
+  category:"tech",
+  quiz:{q:"Kvant kompüterin klassik kompüterdən fərqi nədir?",opts:["Daha böyük ekranı var","Qubitlər eyni anda 0 və 1 ola bilər ✓","Daha az enerji işlədir","Daha ucuzdur"],correct:1,feedback:"Əla! Superposition: qubit eyni anda həm 0 həm 1 ola bilir — bu, paralel hesablama gücü deməkdir.",wrongFeedback:"B düzdür. Kvant kompüterin gücü: qubitlərin eyni anda çoxlu dəyər alması — superposition prinsipindən gəlir."}
+},
+{
+  num:"25", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Davranış",cls:"tag-min"}],
+  title:"Nudge Nəzəriyyəsi", subtitle:"İnsanları zorla deyil, yüngüllə istiqamətləndir",
+  explanation:`<strong>Nudge (İtələmə) Nəzəriyyəsi</strong> — insanların davranışını məcburetmə yox, seçim memarlığını dəyişdirərək istiqamətləndirmək yoludur. Richard Thaler (Nobel 2017) kəşf etdi ki, <strong>default (standart) seçimlər</strong> böyük davranış fərqi yaradır.`,
+  example:`<strong>Nümunə:</strong> Britaniyada işçilər emeklilik fonduna "özü daxil olmalı" idi — iştirak 45%. "Özü çıxmalı" sistemə keçildikdə — iştirak 90% oldu. Seçim eynidir, standart fərqlidir.`,
+  insight:`<strong>Gücün şüuru:</strong> Sənin seçimlərini kim dizayn edir? Supermarketdəki sağlıqlı qidalar göz hündürlüyündə — ya kasada şokolad? Nudge-lər hər yerdə var — onu gör.`,
+  category:"econ",
+  quiz:{q:"Nudge nəzəriyyəsinə görə davranışı dəyişdirən ən effektiv üsul hansıdır?",opts:["Güclü cərimələr tətbiq etmək","Çox məlumat vermək","Default seçimi dəyişdirmək ✓","Reklamla inandırmaq"],correct:2,feedback:"Düzdür! Default seçim — ən güclü nudgedır. İnsanlar çox vaxt standartı dəyişmədən qəbul edir.",wrongFeedback:"C düzdür. Default seçimi dəyişmək — Nudge nəzəriyyəsinin ən güclü alətidir. Emeklilik nümunəsi bunu açıq göstərdi."}
+},
+{
+  num:"26", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Liderlik",cls:"tag-min"}],
+  title:"Empatiya və Simpatiyanın Fərqi", subtitle:"Həqiqi bağlantı necə qurulur",
+  explanation:`<strong>Simpatiia</strong> — birinə yuxarıdan aşağı baxmaq: "Yazıq sən". <strong>Empatiya</strong> — onun hisslərinə girib düşünmək: "Bu ağır olmalıdır". Psixoloq Brené Brown izah etdi: simpatiia bağlantı kəsir, empatiya yaradır.`,
+  example:`<strong>Nümunə:</strong> Dostun işini itirdi. Simpatiia: "Ay bədbəxt, amma bəlkə yaxşı oldu." Empatiya: "Bu həqiqətən çox ağır bir şeydir. Necəsən, nə hiss edirsən?" — sonra susub dinlə.`,
+  insight:`<strong>Əsas bacarıq:</strong> Empatiya "hər şey yaxşı olacaq" deməkdən çox — anın içinə girib birini dinləmək deməkdir. Ən güclü dəstək bəzən susmaqdır.`,
+  category:"psych",
+  quiz:{q:"Empatiyanın simpatiyadan fərqi nədir?",opts:["Empatiia daha rəsmidir","Simpatiyada əziyyət çəkilir","Empatiia birinə 'yuxarıdan' yox, 'içindən' cavab vermektir ✓","Simpatiya daha dərindir"],correct:2,feedback:"Düzdür! Empatiya — birinə yuxarıdan baxmaq deyil, onun perspektivinə daxil olmaqdır.",wrongFeedback:"C düzdür. Empatiya birinə 'yuxarıdan' deyil, 'içindən' — onun hissini anlamağa çalışmaq."}
+},
+{
+  num:"27", tags:[{label:"İş Dünyası",cls:"tag-biz"},{label:"Texnologiya",cls:"tag-tech"}],
+  title:"Disruptiv İnnovasiya", subtitle:"Kiçik oyunçular böyükləri necə deviriyor",
+  explanation:`<strong>Clayton Christensen</strong>in kəşf etdiyi bu nəzəriyyyə: yeni texnologiyalar çox vaxt aşağıdan başlayır — daha ucuz, daha sadə, amma <strong>kifayət qədər yaxşı</strong>. Böyük şirkətlər onu görməz, çünki "gəlirli müştərini" itirmir. Sonra — çox gec.`,
+  example:`<strong>Nümunə:</strong> Netflix DVD poçt göndərişi ilə başladı. Blockbuster onu gülünc saydı. Netflix onlayn keçdi. Blockbuster iflas etdi. Spotify, Uber, Airbnb — hamısı eyni nümunədir.`,
+  insight:`<strong>İki tərəfli dərs:</strong> Yeni başlayansan — aşağıdan başlamaqdan qorxma. Böyük şirkətsən — "bu o qədər kiçikdir ki, narahat olmayaq" düşüncəsi ən ölümcül düşüncədir.`,
+  category:"biz",
+  quiz:{q:"Disruptiv innovasiya çox vaxt hansı istiqamətdən gəlir?",opts:["Bazarın ən böyük oyunçularından","Dövlət siyasəti dəyişikliyindən","Aşağıdan — daha sadə, ucuz həllər ✓","Akademik tədqiqatdan"],correct:2,feedback:"Düzdür! Disruptiv innovasiya: əvvəlcə ucuz, sadə, 'kifayətsiz' görünür — sonra bütün bazarı dəyişir.",wrongFeedback:"C düzdür. Disruptiv innovasiya aşağıdan başlayır: daha az xüsusiyyət, daha ucuz, amma zamanla dominant olur."}
+},
+{
+  num:"28", tags:[{label:"Tarix",cls:"tag-hist"},{label:"Fəlsəfə",cls:"tag-phil"}],
+  title:"Aydınlanma Dövrü", subtitle:"Ağlın hakimiyyəti necə başladı",
+  explanation:`<strong>Aydınlanma (18-ci əsr)</strong> — Avropada ağlı, elmi və fərdi azadlığı kilsə dogması və monarxiya otoritəsinə qarşı çıxaran intellektual hərəkatdır. Voltaire, Rousseau, Kant bu dövrün böyük düşünürləridir. <strong>İnsan hüquqları, demokratiya, azad mətbuat</strong> bu fikir cərəyanından doğdu.`,
+  example:`<strong>Nümunə:</strong> ABŞ Müstəqillik Bəyannaməsi (1776) Aydınlanma ideyalarından birbaşa ilhamlı oldu: "bütün insanlar bərabər yaradılmışdır". Bu Aydınlanma filosoflarının dili idi.`,
+  insight:`<strong>Müasir miras:</strong> Sözün azadlığı, elm metodu, demokratik seçki, laiklik — hamısı Aydınlanma dövrünün irsidir. Bu dəyərlər "həmişə var idi" deyil — kütləvi mübarizə ilə qazanıldı.`,
+  category:"hist",
+  quiz:{q:"Aydınlanma dövrünün əsas prinsipi nə idi?",opts:["Din hər şeyi izah edir","Kral mütləq haqdır","Ağıl, elm və fərdi azadlıq əsas dəyərlərdir ✓","Ənənə dəyişməməlidir"],correct:2,feedback:"Düzdür! Aydınlanma: ağıl, elm, fərdi azadlıq — bu üç dəyər bütün müasir demokratik sistemlərin bünövrəsidir.",wrongFeedback:"C düzdür. Aydınlanma: ağıl, elm, fərdi azadlıq. Bu hərəkat modern dünyanın əsasını qurdu."}
+},
+{
+  num:"29", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Elm",cls:"tag-sci"}],
+  title:"Gözlənti Effekti", subtitle:"Müəllimin gözləntisi şagirdin taleyini dəyişir",
+  explanation:`<strong>Pygmalion Effekti</strong> — başqalarının bizdən bəslədiyi gözləntilərin bizim real performansımıza təsir etməsidir. Robert Rosenthal'ın məhşur araşdırması: müəllimlərə "bu şagirdlər yüksək potensiallidir" denildi (faktiki olaraq random seçim idi). Sonunda o şagirdlər həqiqətən daha yüksək nəticə göstərdi.`,
+  example:`<strong>Nümunə:</strong> Başqalarının sənə "sən bunu edə bilərsən" deməsi performansını artırır. "Sən bacarmazsan" demə isə — uzun müddətdə özünüidarənə girər. Sözlər beyin kimi.`,
+  insight:`<strong>Lider üçün güclü silah:</strong> İnsanlara potensiallarını gör. Gözləntin onların performansını yuxarı çəkir. Ən yaxşı liderlik — kiminsə içindəki imkanı görmək deməkdir.`,
+  category:"psych",
+  quiz:{q:"Pygmalion Effekti nəyi göstərir?",opts:["Uşaqlar müəllimləri kimi olur","Başqalarının gözləntiləri performansımıza gerçek təsir edir ✓","Yüksək IQ-lu şagirdlər daha yaxşı öyrənir","Test nəticələri genetikdən asılıdır"],correct:1,feedback:"Düzdür! Başqalarının gözləntiləri — hətta biz bilməsək belə — davranışımızı və performansımızı real şəkildə dəyişdirir.",wrongFeedback:"B düzdür. Pygmalion Effekti: başqalarının gözləntiləri bizim real performansımıza ölçülə bilən şəkildə təsir edir."}
+},
+{
+  num:"30", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Tarix",cls:"tag-hist"}],
+  title:"Keyns İqtisadiyyatı", subtitle:"Böhran zamanı dövlət niyə xərcləməlidir",
+  explanation:`<strong>John Maynard Keynes</strong> 1936-cı ildə iddia etdi: iqtisadi böhran zamanı özəl sektor xərclərini kəsəndə, dövlət əksinə <strong>xərclərini artırmalı</strong>dır — bu "çubuğu itələmə" iqtisadi fəaliyyəti canlandırır.`,
+  example:`<strong>Nümunə:</strong> 1929 Böyük Depressiyasından çıxış üçün ABŞ-da New Deal proqramı: dövlət yol, körpü, bənd inşası üçün milyardlar xərclədi. İşsizlik azaldı, iqtisadiyyat canlandı — Keynsçi siyasətin ilk böyük tətbiqi.`,
+  insight:`<strong>Mübahisəli nəzəriyyə:</strong> Keyns hər kəsin qəbul etdiyi deyil. Liberallar "dövlət azalmalıdır" deyir. Bu mübahisə hələ davam edir. Amma 2008 böhranında dünya Keyns metoduna qayıtdı.`,
+  category:"econ",
+  quiz:{q:"Keynsçi iqtisadiyyata görə böhran zamanı dövlət nə etməlidir?",opts:["Xərclərini kəsməlidir","Vergiləri artırmalıdır","Xərclərini artırmalıdır ✓","Gözləməlidir"],correct:2,feedback:"Düzdür! Keyns: özəl sektor büzüşəndə dövlət tələbi canlandırmaq üçün xərclərini artırmalıdır.",wrongFeedback:"C düzdür. Keyns: böhran zamanı dövlət xərcləri artırmalı — bu tələbi canlandırır, iş yeri yaradır."}
+},
+{
+  num:"31", tags:[{label:"Elm",cls:"tag-sci"},{label:"Texnologiya",cls:"tag-tech"}],
+  title:"CRISPR Texnologiyası", subtitle:"DNT-ni nizamlayan 'gen məqəzi'",
+  explanation:`<strong>CRISPR-Cas9</strong> — 2012-ci ildə inkişaf etdirilən bir texnologiyadır ki, <strong>DNT-ni dəqiqliklə kəsib dəyişdirməyə</strong> imkan verir. "Genetik məqəz" kimi işləyir: hüceyrənin içinə girib, hədəf geni tapır, kəsir, yeni gen yerləşdirir.`,
+  example:`<strong>Nümunə:</strong> 2023-cü ildə FDA orak hüceyrə xəstəliyini müalicə edən ilk CRISPR terapiyasını təsdiqlədi. Genetik xəstəliklərin müalicəsi, xərçəng terapiyası, daha dözümlü kənd təsərrüfatı — hamısı CRISPR ilə mümkün olur.`,
+  insight:`<strong>Etik sual:</strong> Əgər gen redaktəsi mümkündürsə — uşaqları "dizayn etmək" nə vaxt başlayar? Bu texnologiya insan tarixinin ən böyük etik debatından birini açır.`,
+  category:"sci",
+  quiz:{q:"CRISPR texnologiyası nə edir?",opts:["Virus öldürür","DNT-ni dəqiqliklə kəsib dəyişdirir ✓","Hüceyrəni kopyalayır","Protein sintezi edir"],correct:1,feedback:"Düzdür! CRISPR-Cas9: DNT-ni genetik məqəz kimi kəsib dəyişdirir — gen terapiyasının yeni erasını açdı.",wrongFeedback:"B düzdür. CRISPR: DNT-ni dəqiqliklə kəsib dəyişdirən texnologiya — 'gen məqəzi' metaforu çox düzgün izahadır."}
+},
+{
+  num:"32", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Davranış",cls:"tag-min"}],
+  title:"Hawthorne Effekti", subtitle:"İzlənildiyini bilmək performansı artırır",
+  explanation:`1920-ci illərdə Hawthorne fabrikindəki araşdırma: işçilərin işçilik şəraitini dəyişdikdə (işıq, fasilə vaxtı) <strong>hər iki istiqamətdə</strong> məhsuldarlıq artdı. Niyə? Çünki işçilər izlənildiklərini bildilər. <strong>Müşahidə özü davranışı dəyişdirir.</strong>`,
+  example:`<strong>Nümunə:</strong> Araşdırmalarda iştirakçılar müşahidə ediləndə fərqli davranır. Kamera olan küçələrdə insanlar daha mədəni olur. FitBit taxan insanlar daha çox yeriyir — hər addımı qeyd olunur.`,
+  insight:`<strong>Özün üçün tətbiq:</strong> Davranışını izlə. Gündəlik yediklərin, xərclədiklərini, vaxtını necə keçirdiyini yazmaq — özü performansı artırır. Ölçülen şey yaxşılaşır.`,
+  category:"psych",
+  quiz:{q:"Hawthorne Effektinə görə nə performansı artırır?",opts:["Daha yüksək maaş","İzlənildiyini bilmək ✓","Daha az iş yükü","Müsbət rəy"],correct:1,feedback:"Düzdür! Hawthorne effekti: müşahidə olunduğunu bilmək özü davranışı dəyişdirir, performansı artırır.",wrongFeedback:"B düzdür. Hawthorne effekti: izlənildiyini bilmək — bu şüur özlüyündə davranışı dəyişdirir."}
+},
+{
+  num:"33", tags:[{label:"İş Dünyası",cls:"tag-biz"},{label:"İqtisadiyyat",cls:"tag-econ"}],
+  title:"Böyümə Məntaliteti", subtitle:"Carol Dweck-in zehni inqilabı",
+  explanation:`Stanford psixoloqu <strong>Carol Dweck</strong> iki düşüncə tərzi kəşf etdi: <strong>sabit (fixed mindset)</strong> — bacarıq doğuşdan gəlir, dəyişmir; <strong>böyümə (growth mindset)</strong> — bacarıq səy ilə inkişaf edir. Uğurun ən güclü proqnozçusu IQ deyil, hansı zehni daşıdığındır.`,
+  example:`<strong>Nümunə:</strong> Sabit zehni: "Riyaziyyatda yaxşı deyiləm" → çalışmır. Böyümə zehnli: "Hələ yaxşı deyiləm" → addımlar atır. "Hələ" sözü — Dweck-ə görə ən güclü tərəqqi sözüdür.`,
+  insight:`<strong>"Hələ" sözünü əlavə et:</strong> "Bacarmıram" → "Hələ bacarmıram". Bu kiçik dil dəyişikliyi beynin öyrənməyə yanaşmasını dəyişdirir.`,
+  category:"biz",
+  quiz:{q:"Böyümə zehninə sahib biri necə düşünür?",opts:["Uğursuzluq — istedadın olmadığını sübut edir","Bacarıq doğuşdan gəlir, dəyişmir","Çalışma ilə hər bacarıq inkişaf etdirilə bilər ✓","Rəqabətdən qaçmaq lazımdır"],correct:2,feedback:"Düzdür! Böyümə zehnli: hər bacarıq cəhd ilə inkişaf edə bilər. Uğursuzluq — öyrənmənin bir parçasıdır.",wrongFeedback:"C düzdür. Growth mindset: bacarıqlar sabit deyil, səy və öyrənmə ilə inkişaf edir."}
+},
+{
+  num:"34", tags:[{label:"Tarix",cls:"tag-hist"},{label:"Fəlsəfə",cls:"tag-phil"}],
+  title:"Sokrat Metodu", subtitle:"Cavab verməyin ən güclü yolu sual sormaqdır",
+  explanation:`<strong>Sokrat</strong> Yunan filosofu idi — heç nə yazmadı, amma hər şeyi sual soruşaraq öyrətdi. Metodu: <strong>ardıcıl suallarla</strong> insanın öz inanclarındakı ziddiyyətləri görməsinə kömək etmək. "Mən yalnız bilmədiyimi bilirəm" — bu həllilik onun başlanğıc nöqtəsi idi.`,
+  example:`<strong>Nümunə:</strong> Birisi "ədalət güclünün haqqıdır" iddia edir. Sokrat soruşur: "Pəki, güclü səhv edəndə bu da ədalətlidirmi?" Ardıcıl suallarla inancın çökdüyü görsənir.`,
+  insight:`<strong>Güclü vərdiş:</strong> Hər qeyri-müəyyən vəziyyətdə birbaşa cavab vermə. Əvvəlcə 3 sual sor. Sual vermək — cavab vermekdən daha çox şey öyrədir.`,
+  category:"hist",
+  quiz:{q:"Sokrat metodunun əsası nədir?",opts:["Uzun leksiyalar verməK","Ardıcıl suallarla düşüncəni inkişaf etdirmək ✓","Kitablardan öyrənmək","Mübahisə etmək"],correct:1,feedback:"Düzdür! Sokrat metodu: sual, cavab, yeni sual — bu döngü ilə düşüncədəki ziddiyyətlər aşkara çıxır.",wrongFeedback:"B düzdür. Sokrat metodu: ardıcıl suallarla insanı öz düşüncəsini sorgulamağa aparmaq."}
+},
+{
+  num:"35", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Davranış",cls:"tag-min"}],
+  title:"Batmış Xərc Yanılması", subtitle:"Niyə dayandığımızda itkiləri sayırıq",
+  explanation:`<strong>Batmış xərc yanılması (sunk cost fallacy)</strong> — artıq xərclənmiş pul, vaxt, enerjiyə görə geri dönməyən qərarlara davam etməkdir. İqtisadi cəhətdən irrasionaldır: <strong>keçmiş xərclər gələcək qərarları dəyişdirməməlidir</strong>.`,
+  example:`<strong>Nümunə:</strong> Bilet aldın, yağış var — sıxıcı konsert olacaq. Amma "pul ödəmişəm" deyib gedirsən. Yaxud 3 il bir münasibətə investisiya etdin — uyğun deyilsən, amma "bu qədər il verdim" deyib davam edirsən.`,
+  insight:`<strong>Serbest düşünmə:</strong> Növbəti dəfə dur. Soruş: "Bu qərarı bu gün sıfırdan versəydim, yenə eyni seçimi edərdimmi?" Cavab xeyr isə — "batmış xərc"ə görə qalma.`,
+  category:"econ",
+  quiz:{q:"Batmış xərc yanılması nədir?",opts:["Gələcək xərcləri hesablamaq","Artıq xərclənmiş resurslara görə irrasional qərarlara davam etmək ✓","Hesabat xətaları","Büdcə planlaması"],correct:1,feedback:"Düzdür! Batmış xərc irrasionaldır: keçmişdə nə xərclədinə görə gələcəyi idarə etmə.",wrongFeedback:"B düzdür. Batmış xərc yanılması: artıq xərclənmiş resurslara görə geri dönməyən qərarlara davam etmək."}
+},
+{
+  num:"36", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Sosial",cls:"tag-min"}],
+  title:"Fundamental Atribusiya Xətası", subtitle:"Özünü bağışlar, başqasını mühakimə edirsən",
+  explanation:`<strong>Fundamental atribusiya xətası</strong> — başqasının davranışını xarakter xüsusiyyəti ilə, öz davranışımızı isə vəziyyətin gətirdiyi şeydir deyə izah etmə meylimizdir. "O gecikmişdir çünki məsuliyyətsizdir." "Mən gecikmişəm çünki trafik çox pis idi."`,
+  example:`<strong>Nümunə:</strong> Avtomobil qabaqdan kəsiyor. "Nə cahil sürücü!" — əslində həmin adam həyat yoldaşını xəstəxanaya aparır. Sən kəsəndə — "üzr, tez-tez olmur, trafikdeydi" deyirsən.`,
+  insight:`<strong>Güclü empatiia texnikası:</strong> Birilinin davranışına mənfi qiymət verirsənsə, dur. Soruş: "Bu insanın vəziyyəti necədir? Nə keçirdiyi haqqında nə bilirəm?" Çox vaxt — heç nə.`,
+  category:"psych",
+  quiz:{q:"Fundamental atribusiya xətası necə özünü göstərir?",opts:["Öz günahı hər zaman başqasına yüklemek","Başqasının davranışını xarakterlə, özünkünü vəziyyətlə izah etmek ✓","Hər şeyi şansa yüklemek","Fərdi fərqləri inkar etmek"],correct:1,feedback:"Düzdür! Başqası gecikdikdə: 'məsuliyyətsizdir'. Mən gecikdikdə: 'vəziyyət belə gətirdi'. Bu çifte standartdır.",wrongFeedback:"B düzdür. FAE: başqasının davranışını xarakter xüsusiyyəti, özününkünü vəziyyət ilə izah etmek meyli."}
+},
+{
+  num:"37", tags:[{label:"Texnologiya",cls:"tag-tech"},{label:"İqtisadiyyat",cls:"tag-econ"}],
+  title:"Eksponensial Artım", subtitle:"İnsan beyni niyə bu güce inanmır",
+  explanation:`<strong>Eksponensial artım</strong> — hər addımda sabit bir faizlə artmaqdır. Başlanğıcda yavaş görünür, amma bir nöqtədən sonra <strong>partlayış sürəti</strong> qazanır. İnsan beyni lineer düşünür — buna görə bu gücü dərk etmək çox çətin olur.`,
+  example:`<strong>Nümunə:</strong> Bir kağızı 42 dəfə qat. Nə qədər qalınlaşar? Ay-a çatar! (Hər qatlamada ikiqat olur). Pirinç taxta nümunəsi: şahmat lövhəsinin birinci xanasına 1 dən, ikinciyə 2, üçüncüyə 4... 64-cü xanada: bütün dünyanın pirinç istehsalından 1000x çox dən lazımdır.`,
+  insight:`<strong>COVID sürəti, süni intellektin artımı, yoxsulluğun azalması</strong> — hamısı eksponensial qraflardadır. Lineer düşüncə bizi gecikdirir. Gücü görmək — avantajdır.`,
+  category:"tech",
+  quiz:{q:"Niyə insan beyni eksponensial artımı dərk etməkdə çətinlik çəkir?",opts:["Riyaziyyat bilmirik","Beyin lineer düşünür, eksponensial döngəyə alışmamışdır ✓","Yaddaşımız zəifdir","Eksponensial artım nadirdir"],correct:1,feedback:"Düzdür! Beyin lineer düşünmək üçün inkişaf etmişdir. Eksponensial artımın başlanğıcı yavaş görünür — beyni aldadır.",wrongFeedback:"B düzdür. Beyin lineer artıma alışıb. Eksponensial artım başlanğıcda yavaş göründüyü üçün gücünü görə bilmirik."}
+},
+{
+  num:"38", tags:[{label:"İş Dünyası",cls:"tag-biz"},{label:"Psixologiya",cls:"tag-psych"}],
+  title:"Maslow Ehtiyaclar Piramidası", subtitle:"İnsan niyə hər şeye nail olsa da çatışmazlıq hiss edir",
+  explanation:`<strong>Abraham Maslow</strong> 1943-cü ildə ehtiyacları 5 səviyyəli piramida şəklində sıraladı: <strong>fizioloji → təhlükəsizlik → sevgi/mənsub → hörmət → özünüaktualizasiya</strong>. Alt ehtiyaclar ödənmədən yuxarıya keçilmir. Amma üst ehtiyaclar həmişə yeni "boşluq" yaradır.`,
+  example:`<strong>Nümunə:</strong> Var-dövlət qazandıqda (təhlükəsizlik) birdən "mənim həyatımın mənası nədir?" sualı güclənir (özünüaktualizasiya). Yoxsulluqda bu sualın "lüksü" olmur.`,
+  insight:`<strong>Praktik mənası:</strong> Hər insan həmişə "çatışmaz" bir şey hiss edir — bu normal. Piramida bitmır. Amma hansı ehtiyacın güclü olduğunu bilmək — doğru diqqəti verməyə kömək edir.`,
+  category:"biz",
+  quiz:{q:"Maslow piramidası üzrə fizioloji ehtiyaclar (yemək, su) ödənmədikdə insan...",opts:["Özünüaktualizasiyaya nail ola bilər","Yuxarı ehtiyaclara diqqət verə bilmir ✓","Dini inanca meyl edir","Sosial əlaqəyə fokuslanır"],correct:1,feedback:"Düzdür! Maslow: alt ehtiyaclar ödənmədən yuxarıya keçilmir. Aclıq varsa — mənalı iş axtarmaq planda qalmır.",wrongFeedback:"B düzdür. Maslow piramidası: alt ehtiyaclar ödənmədikdə yuxarısına keçid mümkünsüzdür."}
+},
+{
+  num:"39", tags:[{label:"Tarix",cls:"tag-hist"}],
+  title:"Soyuq Müharibə", subtitle:"Bomba atılmadan on illər süren gərginlik",
+  explanation:`<strong>Soyuq Müharibə</strong> (1947–1991) — ABŞ və SSRİ arasında birbaşa silahlı münaqişə olmadan ideoloji, iqtisadi, texnoloji rəqabətin davam etdiyi dövrdir. NATO-nun SSRİ-yə, Varşava Paktının Qərbə qarşı cəbhə xətti dünyanı iki düşərgəyə böldü.`,
+  example:`<strong>Nümunə:</strong> Kosmosa ilk getmək (Sputnik 1957, Apollo 1969) — bu elmi deyil, siyasi rəqabətin məhsulu idi. Kosmik yarış, atomar silah yarışı, Kuba Raketi Böhranı — hər biri "isti müharibənin" astanasında idi.`,
+  insight:`<strong>Miras:</strong> İnternet, GPS, mikrodalgalı soba — hamısı Soyuq Müharibə dövründə hərbi tədqiqatdan doğdu. "Rəqabət innovasiya doğurur" iddiasının ən böyük tarixi sübutu bu dövrdir.`,
+  category:"hist",
+  quiz:{q:"Soyuq Müharibə hansı iki güc arasında idi?",opts:["Britaniya - Fransa","ABŞ - Çin","ABŞ - SSRİ ✓","Almaniya - Rusiya"],correct:2,feedback:"Düzdür! ABŞ-SSRİ — 1947-1991 arası ideoloji, iqtisadi, texnoloji rəqabətin iki gücü.",wrongFeedback:"C düzdür. Soyuq Müharibə: ABŞ (demokratiya, kapitalizm) ilə SSRİ (kommunizm) arasındakı rəqabətdir."}
+},
+{
+  num:"40", tags:[{label:"Elm",cls:"tag-sci"},{label:"Fəlsəfə",cls:"tag-phil"}],
+  title:"Fermi Paradoksu", subtitle:"Niyə özgə varlıqlar hələ tapılmamışdır",
+  explanation:`Fizik <strong>Enrico Fermi</strong> sual etdi: Kainat 13.8 milyard yaşındadır, milyardlarla ulduz var, çoxunun ətrafında planetlər mövcuddur. Əgər həyat mümkündürsə — <strong>niyə hələ heç bir xarici sivilizasiyanın işarəsi tapılmamışdır?</strong> Bu "Böyük Sükut"dur.`,
+  example:`<strong>Nümunə:</strong> Əgər həyat mümkündürsə — hansısa sivilizasiya milyardlarla il öncə başlamış ola bilərdi. Bu müddət ərzində bütün Qalaksiyaya yayıla bilərdi. Biz niyə onları görmürük?`,
+  insight:`<strong>İzahat nəzəriyyələri:</strong> Həyat nadir fenomendir (Nadir Dünya Hipotezi), ya da qabaqcıl sivilizasiyalar özünü məhv edir (Böyük Filtr), ya da bizi dinləyirlər amma cavab vermirlər. Heç biri ispatlanmamışdır.`,
+  category:"sci",
+  quiz:{q:"Fermi Paradoksunun əsas sualı nədir?",opts:["Kainat nə qədər böyükdür?","Günəş sistemimiz nə vaxt formalaşıb?","Kainat bu qədər böyükdürsə, özgə həyat niyə tapılmamışdır? ✓","Qara dəliklər nədir?"],correct:2,feedback:"Düzdür! Fermi Paradoksu: kainatın böyüklüyünə baxmayaraq özgə sivilizasiyaların sükutu necə izah olunur?",wrongFeedback:"C düzdür. Fermi Paradoksu: kainat bu qədər böyükdürsə, başqa sivilizasiyalar niyə hələ aşkar edilməmişdir?"}
+},
+{
+  num:"41", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Liderlik",cls:"tag-min"}],
+  title:"Aktiv Dinləmə", subtitle:"Eşitmək deyil, anlamaq",
+  explanation:`<strong>Aktiv dinləmə</strong> — yalnız söz eşitmək deyil, arxasındakı hissi, niyyəti, nəzərdə tutulanı anlamağa çalışmaqdır. İnsanların çoxu cavabı düşünərək "dinləyir". Aktiv dinləyici <strong>tam orada olur</strong> — bütün diqqəti qarşısındakındadır.`,
+  example:`<strong>Nümunə:</strong> Dost deyir: "İşim çox sıxıcı olub." Passiv eşidən cavab: "Mənim də elə." Aktiv dinləyən: "Nə vaxtdan belə hiss edirsən? Nə xüsusiyyəti sıxır?" — soruşur, dinləyir, dövam.`,
+  insight:`<strong>Güclü texnika:</strong> Konversasiyada telefonunu cibinə qoy. Başını irəli əy. Hər cümlədən sonra sual ver. Sükut qorxutmasın — 3-5 saniyə sükut insanı daha çox danışmağa sövq edir.`,
+  category:"psych",
+  quiz:{q:"Aktif dinleme nedir?",opts:["Söhbət zamanı cavab planlamaq","Yalnız sözü eşitmek","Tam diqqetle anlama ve sual soruşmak ✓","Başqa şeyleri düşünmek"],correct:2,feedback:"Düzdür! Aktiv dinleme: cavab planlamaq deyil, tam diqqetle qarşındakını anlamaqdir.",wrongFeedback:"C düzdür. Aktif dinleme: tam diqqetle, sual soruşaraq, anlamağa çalışaraq dinlemedir."}
+},
+{
+  num:"42", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"İş Dünyası",cls:"tag-biz"}],
+  title:"Çəlbedicilik Effekti", subtitle:"Üçüncü seçim necə qərarı dəyişirir",
+  explanation:`<strong>Çəlbedicilik (Decoy) Effekti</strong> — marketinqdə 3 seçim əlavə edildikdə insanların öncədən seçmədikləri variantı seçmə ehtimalı artır. İlgisiz (dominant) olan üçüncü seçim birinin dəyərini artırır.`,
+  example:`<strong>Nümunə:</strong> Kiçik Kino popkornu 5₼, Böyük 9₼ idi — insanlar kiçiyi seçirdi. Orta 8₼ əlavə etdilər. Qəfil böyük daha "sərfəli" görünməyə başladı — böyük popkornun satışı 90% artdı.`,
+  insight:`<strong>Diqqətli ol:</strong> "Orta seçim" çox vaxt rəqib deyil — sənin "ən yaxşı" seçimini daha cəlbedici etmək üçün yerləşdirilmiş aldadıcı variandır. Menyu, tarif planları, bank məhsulları — hər yerdədir.`,
+  category:"econ",
+  quiz:{q:"Decoy (Çəlbedici) effekti marketinqdə nə üçün istifadə olunur?",opts:["Qiyməti aşağı salmaq üçün","İnsanların daha bahalı seçimi seçməsinə sövq etmek üçün ✓","Məhsulu ucuzlaşdırmaq üçün","Reklam xərclərini azaltmaq üçün"],correct:1,feedback:"Düzdür! Decoy effekti: üçüncü (dominant) seçim əlavə edərək insanları daha bahalı seçimə yönəltmək üçün istifadə olunur.",wrongFeedback:"B düzdür. Decoy effekti: əlavə olunan üçüncü seçim insanın 'hədəf' seçimi daha cəlbedici görməsini sağlayır."}
+},
+{
+  num:"43", tags:[{label:"Tarix",cls:"tag-hist"},{label:"Elm",cls:"tag-sci"}],
+  title:"Qutenberg Matbəəsi", subtitle:"Məlumatın demokratlaşması",
+  explanation:`<strong>Johannes Gutenberg</strong> 1440-cı ildə hərəkətli tip ilə çap üsulunu kəşf etdi. Bu andan əvvəl kitablar əllə köçürülürdü — yalnız kilsə və zadəganlar sahib ola bilirdi. Matbəə <strong>50 il içində milyonlarla kitab çap etdi</strong> — məlumat demokratlaşdı.`,
+  example:`<strong>Nümunə:</strong> Reformasiya (1517) mümkün oldu çünki Martin Luther-in 95 tezisi çap olunaraq bütün Avropaya yayıldı — əl ilə köçürsəydi yüzillər alardı. Matbəə fikri, devrimi yayındı.`,
+  insight:`<strong>Paralel internet:</strong> Gutenberg matbəəsi nə etdisə — internet 20-ci əsrdə onu etdi. Hər ikisi məlumatı əl çatmaz əldən hamıya açıq etdi. Hər ikisi cəmiyyəti köklü dəyişdirdi.`,
+  category:"hist",
+  quiz:{q:"Gutenberg matbəəsi nə zaman kəşf edildi?",opts:["1200-cü il","1440-cı il ✓","1600-cü il","1750-ci il"],correct:1,feedback:"Düzdür! Gutenberg 1440-cı illərdə hərəkətli tip çap üsulunu inkişaf etdirdi. Bu kəşf Avropanı köklü dəyişdirdi.",wrongFeedback:"B düzdür. Gutenberg 1440-cı illərdə çap texnologiyasını inkişaf etdirdi — bu tarixi dönüş nöqtəsi idi."}
+},
+{
+  num:"44", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Elm",cls:"tag-sci"}],
+  title:"Yuxunun Elmi", subtitle:"Ən güclü performans aləti pulsuzdur",
+  explanation:`Nöroloq <strong>Matthew Walker</strong>-in araşdırması: yuxu yalnız istirahət deyil, <strong>aktiv bərpa prosesidir</strong>. Yuxu zamanı beyin günün məlumatlarını emal edir, uzunmüddətli yaddaşa köçürür, zəhərli maddələri təmizləyir. Az yuxu — sürücü kimi effekt göstərir.`,
+  example:`<strong>Nümunə:</strong> 17-19 saatlıq oyanıqlıq vəziyyəti qan alkoqol səviyyəsi 0.05% ilə bərabər sürücülük effekti verir. Sporçular 8-10 saat yuxu ötürürlər — çünki performans artımı onların ən ucuz "dərmanıdır".`,
+  insight:`<strong>Populyar yalan:</strong> "Cəsarətli insanlar az yatır." Əslində: az yatan insanlar öz performanslarının nə qədər aşağı düşdüyünü görmürlər. Yuxu üçün "vaxt yoxdur" — enerji üçün vaxt yoxdur deməkdir.`,
+  category:"sci",
+  quiz:{q:"Walker-in araşdırmasına görə az yuxunun ən vacib nəticəsi nədir?",opts:["Yalnız yorğunluq hissi","Mühüm qərar vermə qabiliyyəti və yaddaş ciddi şəkildə zəifləyir ✓","Yalnız bədən sağlamlığına zərər","Yalnız ömrü qısaldır"],correct:1,feedback:"Düzdür! Az yuxu: idrak funksiyaları, qərar vermə, emosional idarə — hamısı ciddi şəkildə azalır.",wrongFeedback:"B düzdür. Az yuxu beyin funksiyalarını — yaddaş, qərar vermə, konsentrasiya — ciddi zəiflədir."}
+},
+{
+  num:"45", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"İş Dünyası",cls:"tag-biz"}],
+  title:"Bazar Segmentasiyası", subtitle:"Hər kəsə satmaq heç kəsə satmamaq deməkdir",
+  explanation:`<strong>Bazar seqmentasiyası</strong> — geniş bazarı oxşar ehtiyac, davranış ya da xarakteristikaya malik qruplara bölmək prosesidir. "Hər kəs üçün" məhsul əslində "heç kəs üçün" olmaq riskini daşıyır. <strong>Spesifik olmaq — daha çox satmağın paradoksal yoludur.</strong>`,
+  example:`<strong>Nümunə:</strong> Nike "idman ayaqqabısı" satmır. Qaçışçılar, basketbolçular, CrossFit edənlər üçün ayrı məhsul xətləri var. Hər xətt fərqli mesaj, fərqli problem həll edir.`,
+  insight:`<strong>Gənc sahibkarlar üçün:</strong> "Hər kəsə satacağam" fikri — çox vaxt ilk böyük səhvdir. Bir xüsusi problemi daha yaxşı həll etmək — geniş bazarda orta olmaqdan güclüdür.`,
+  category:"econ",
+  quiz:{q:"Bazar seqmentasiyası niyə vacibdir?",opts:["Qiyməti aşağı salmaq üçün","Hamıya eyni mesaj vermek üçün","Müxtəlif qrupların fərqli ehtiyaclarını ayrıca ödəmek üçün ✓","Reklam xərclərini azaltmaq üçün"],correct:2,feedback:"Düzdür! Seqmentasiya: fərqli qrupların fərqli ehtiyaclarını müəyyən edib hər birinə xüsusi həll sunmaq üçündür.",wrongFeedback:"C düzdür. Bazar seqmentasiyası: müxtəlif qruplar fərqli ehtiyac daşıyır — onlara fərqli yanaşmaq daha effektivdir."}
+},
+{
+  num:"46", tags:[{label:"Fəlsəfə",cls:"tag-phil"},{label:"Psixologiya",cls:"tag-psych"}],
+  title:"Memar Buckminster Fuller", subtitle:"'Siz ya gərəkli kimi gözükün ya da gərəkli oluun'",
+  explanation:`<strong>Buckminster Fuller</strong> arxitektor, filosof, futurist idi. Dediyi: "Mövcud sistemi dəyişdirmək istəyirsənsə — onu sıradan çıxaracaq yeni bir sistem qur." Müxaliflik deyil, alternativ. Tənqid deyil, <strong>daha yaxşı nümunə</strong>.`,
+  example:`<strong>Nümunə:</strong> İctimai nəqliyyatı tənqid etmək deyil — daha yaxşı alternativ qurmaq. Köhnə media ilə mübahisə etmək deyil — daha etibarlı mənbə yaratmaq. Tesla pis avtomobilləri tənqid etmədi — daha yaxşısını düzəltdi.`,
+  insight:`<strong>Güclü prinsiip:</strong> Dünyanı dəyişmək istəyirsənsə — nəyi istemədiyini deyil, nə istədiyini qur. Enerjini tənqidə yox, alternativə yönəlt.`,
+  category:"phil",
+  quiz:{q:"Fuller-in fəlsəfəsinə görə dəyişim necə gəlir?",opts:["Köhnə sistemə güclü tənqid ilə","Daha yaxşı bir alternativ sistemin qurulması ilə ✓","Siyasi fəaliyyətlə","Gözləmək ilə"],correct:1,feedback:"Düzdür! Fuller: köhnə sistemi sıradan çıxaracaq yeni sistem qur. Tənqid deyil — alternativ.",wrongFeedback:"B düzdür. Fuller: mövcud sistemi tənqid etmə, onu sıradan çıxaracaq daha yaxşı alternativ qur."}
+},
+{
+  num:"47", tags:[{label:"Texnologiya",cls:"tag-tech"},{label:"Davranış",cls:"tag-min"}],
+  title:"Diqqətin İqtisadiyyatı", subtitle:"Ən qiymətli resurs zamanınız deyil, diqqətinizdir",
+  explanation:`<strong>Diqqətin iqtisadiyyatı (attention economy)</strong> — texnoloji şirkətlərin əsas məhsulunun sizdən aldıqları <strong>diqqət</strong> olduğu iqtisadi sistemdir. Siz məhsul deyilsiniz — ancaq, diqqətiniz satılan məhsuldur. Reklam verənlər onun alıcısıdır.`,
+  example:`<strong>Nümunə:</strong> Facebook, TikTok, Instagram heç bir qiymət almır. Bunun əvəzinə onlar sizin diqqətinizi — neçə saat, nə vaxta, nə növ məzmunu izlədiyinizi — reklam verənlərə satır.`,
+  insight:`<strong>Güclü sual:</strong> Bu gün 3 saat telefonda keçirdinsə — 3 saat kim üçün işlədin? Onlar sənin üçün bir şey qurdu mu? Diqqətin kimin maraqlarına xidmət edir?`,
+  category:"tech",
+  quiz:{q:"Diqqətin iqtisadiyyatında əsl 'məhsul' kimdir?",opts:["Texnoloji şirkət","İstifadəçinin diqqəti ✓","Reklam verən","Proqram"],correct:1,feedback:"Düzdür! Diqqətin iqtisadiyyatı: istifadəçinin diqqəti — reklam verənlərə satılan məhsuldur.",wrongFeedback:"B düzdür. Diqqətin iqtisadiyyatı: pulsuz platformalar sizin diqqətinizi reklam verənlərə satır."}
+},
+{
+  num:"48", tags:[{label:"İqtisadiyyat",cls:"tag-econ"},{label:"Tarix",cls:"tag-hist"}],
+  title:"Azad Ticarətin Faydaları", subtitle:"Nisbi üstünlük prinsipi",
+  explanation:`Davide Ricardo-nun <strong>nisbi üstünlük (comparative advantage)</strong> prinsipi: hər ölkə hətta hər şeyi özü daha yaxşı istehsal edə bilsə belə — yalnız <strong>nisbi olaraq ən yaxşı olduğu şeyi</strong> istehsal edib qalanını mübadiləyə verəndə hamı qazanır.`,
+  example:`<strong>Nümunə:</strong> Cərrah həm cərrahiyyəyə həm də komputerə hamıdan yaxşıdır. Amma cərrahiyyəni etmək çok daha dəyərlidir — komputer işini başqasına həvalə edir. Hər iki tərəf qazanır.`,
+  insight:`<strong>Azad ticarətin əsası:</strong> Ölkələr mütləq üstünlük deyil, nisbi üstünlük üzrə ixtisaslaşanda dünya ümumi istehsalı artır. Ticarət müsbət cəm oyundur.`,
+  category:"econ",
+  quiz:{q:"Nisbi üstünlük prinsipinə görə bir ölkə nəyi etməlidir?",opts:["Hər şeyi özü istehsal etmek","Yalnız ən ucuz məhsulları satmaq","Nisbi üstünlüyü olan sahədə ixtisaslaşmaq ✓","İdxalı yasaqlamaq"],correct:2,feedback:"Düzdür! Nisbi üstünlük: mütleq üstünlük deyil, nisbi olaraq ən yaxşı olduğun sahədə ixtisaslaş. Hamı qazanır.",wrongFeedback:"C düzdür. Ricardo: hər ölkə nisbi üstünlüyü olan sahədə ixtisaslaşanda ümumi refah artır."}
+},
+{
+  num:"49", tags:[{label:"Elm",cls:"tag-sci"},{label:"Fəlsəfə",cls:"tag-phil"}],
+  title:"Okam Ustürası", subtitle:"Ən sadə izahat çox vaxt düzdür",
+  explanation:`<strong>Okam Ustürası (Occam's Razor)</strong> — 14-cü əsr filosof William of Ockham-dan gəlir: "Lazımsız varlıqları artırma." Biri ilə izah oluna biləcəyi yerdə iki prinsipi istifadə etmə. Başqa sözlə: <strong>ən sadə izahat, çox vaxt ən doğrusudur</strong>.`,
+  example:`<strong>Nümunə:</strong> Küçədə palazı islanmış görürsən. İzahat A: yağış yağıb. İzahat B: qonşun suyunu daşıyanda tökdü, xidmətçi daha sonra silib, amma palaz yaş qaldı. Okam Ustürası: A daha ehtimallıdır.`,
+  insight:`<strong>Düşüncə aləti:</strong> Bir problemi izah edərkən mümkün qədər az fərziyyə istifadə et. Ən sadə, daha az şeyə ehtiyac duyan izahat — çox vaxt daha güclüdür.`,
+  category:"sci",
+  quiz:{q:"Okam Ustürası nəyi deyir?",opts:["Ən mürəkkəb izahat ən düzgündür","Elmi sübut olmadan heç nəyə inanma","Lazımsız fərziyyələri artırma, sadə izahatı üstün tut ✓","Hər şeyin bir izahatı var"],correct:2,feedback:"Düzdür! Okam Ustürası: lazımsız fərziyyə əlavə etmə. Sadə izahat — daha az fərziyyə tələb edir, çox vaxt daha doğrudur.",wrongFeedback:"C düzdür. Okam Ustürası: lazımsız fərziyyə artırma. Sadə izahat çox vaxt daha doğrudur."}
+},
+{
+  num:"50", tags:[{label:"Psixologiya",cls:"tag-psych"},{label:"Fəlsəfə",cls:"tag-phil"}],
+  title:"İkona Effekti", subtitle:"Niyə bütün böyük insanlar 'sirrini' bilir",
+  explanation:`<strong>Viktor Frankl</strong> — Nazi konsentrası düşərgəsindən sağ çıxdı. Gözəlləmdi: fiziki şərtlər ne kadar ağır olsa da, insanın <strong>öz reaksiyasını seçmə azadlığı</strong> əlindən alına bilmir. Mənalı həyat — xarici şəraitdən deyil, içi anlamdan gəlir.`,
+  example:`<strong>Nümunə:</strong> İki insan eyni böhranı yaşayır. Biri çöküntüyə girir, biri böyüyür. Fərq xarici şərait deyil — "bu mənə nə öyrədir?" sualıdır. Frankl: "Həyatdan nə gözləyirsən?" yox — "Həyat səndən nə gözləyir?"`,
+  insight:`<strong>Logoterapiya::</strong> Mənasızlıq ən böyük əzabdır. Bir məna tap — istənilən şərtdə. Bu "niyə" — istənilən "necə"ni taşıyır. Nietzsche də bunu demişdi.`,
+  category:"psych",
+  quiz:{q:"Viktor Frankl-ın əsas mesajı nə idi?",opts:["Xarici şərait insanı tamamilə müəyyən edir","İnsan öz reaksiyasını seçmə azadlığına həmişə sahibdir ✓","Xoşbəxtlik puldan asılıdır","Müharibə insanı məhv edir"],correct:1,feedback:"Əla! Frankl: ən ağır şəraitdə belə — öz reaksiyamızı seçmə azadlığı biz edərik. Bu son azadlıqdır.",wrongFeedback:"B düzdür. Frankl: hər şərtdə insan öz reaksiyasını, münasibətini seçə bilir. Bu son azadlıqdır."}
+}
+];
+
+/* ═══════════════════════════════════
+   GAMIFICATION
+═══════════════════════════════════ */
+const LEVELS = [
+  { name:'Meraqlı',    min:0,   badge:'🔍' },
+  { name:'Düşünən',   min:60,  badge:'💭' },
+  { name:'Təhlilçi',  min:180, badge:'🔬' },
+  { name:'Filosof',   min:380, badge:'📚' },
+  { name:'Müdrik',    min:600, badge:'🦉' },
+];
+const XP_REWARDS = { lesson:10, quiz_correct:25 };
+
+const CATEGORY_META = {
+  econ:  { name:'İqtisadiyyat', icon:'📈', cls:'c-econ',  desc:'Qiymət, bazar, pul, davranış iqtisadiyyatı' },
+  psych: { name:'Psixologiya',  icon:'🧠', cls:'c-psych', desc:'Beyin, davranış, qərar, motivasiya' },
+  hist:  { name:'Tarix',        icon:'🏛️', cls:'c-hist',  desc:'İmperiyalar, inqilablar, kəşflər' },
+  tech:  { name:'Texnologiya',  icon:'⚡', cls:'c-tech',  desc:'Kompüterlər, internet, innovasiya' },
+  biz:   { name:'İş Dünyası',   icon:'💼', cls:'c-biz',   desc:'Strategiya, liderlik, girişimçilik' },
+  sci:   { name:'Elm',          icon:'🔭', cls:'c-sci',   desc:'Fizika, biologiya, kimya, kəşflər' },
+  phil:  { name:'Fəlsəfə',      icon:'🌿', cls:'c-phil',  desc:'Həyat mənası, etika, düşüncə sistemləri' },
+  gen:   { name:'Ümumi Bilik',  icon:'🌍', cls:'c-gen',   desc:'Müxtəlif sahələrdən maraqlı faktlar' },
+};
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('bnoe_v2') || '{}');
+    return { xp: s.xp||0, streak: s.streak||0, lastDate: s.lastDate||null, bookmarks: s.bookmarks||[], seen: s.seen||[] };
+  } catch(e) { return { xp:0, streak:0, lastDate:null, bookmarks:[], seen:[] }; }
+}
+function saveState() { try { localStorage.setItem('bnoe_v2', JSON.stringify(gs)); } catch(e) {} }
+let gs = loadState();
+
+function checkStreak() {
+  const today = new Date().toDateString();
+  if (gs.lastDate === today) return;
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  gs.streak = (gs.lastDate === yesterday) ? gs.streak+1 : 1;
+  gs.lastDate = today; saveState();
+}
+
+function getCurrentLevel() {
+  for(let i=LEVELS.length-1;i>=0;i--) if(gs.xp>=LEVELS[i].min) return i;
+  return 0;
+}
+function getXpProgress() {
+  const lvl=getCurrentLevel();
+  if(lvl>=LEVELS.length-1) return {pct:100};
+  const from=LEVELS[lvl].min,to=LEVELS[lvl+1].min;
+  return {pct:Math.min(((gs.xp-from)/(to-from))*100,100)};
+}
+function addXP(amount,label) {
+  const lvlBefore=getCurrentLevel();
+  gs.xp+=amount; saveState(); updateStreakBar();
+  showXpToast(`+${amount} XP — ${label}`);
+  if(getCurrentLevel()>lvlBefore) setTimeout(()=>showLevelUp(getCurrentLevel()),800);
+}
+
+function updateStreakBar() {
+  const flame = gs.streak>=14 ? '🔥' : gs.streak>=7 ? '🔥' : '🔥';
+  document.getElementById('streakFlame').textContent=flame;
+  document.getElementById('streakCount').textContent=gs.streak;
+  document.getElementById('xpCount').textContent=gs.xp;
+  document.getElementById('xpBar').style.width=getXpProgress().pct+'%';
+  document.getElementById('levelBadge').textContent=LEVELS[getCurrentLevel()].name;
+  // Week dots
+  const wd = document.getElementById('weekDots');
+  wd.innerHTML='';
+  for(let i=6;i>=0;i--) {
+    const d=new Date(Date.now()-i*86400000);
+    const dayStr=d.toDateString();
+    const dot=document.createElement('div');
+    const isToday=i===0, isFilled=gs.streak>=(7-i)||(i===0&&gs.lastDate===dayStr);
+    dot.className='week-dot'+(isToday?' today':isFilled?' filled':'');
+    wd.appendChild(dot);
+  }
+}
+
+/* ═══════════════════════════════════
+   VIEWS
+═══════════════════════════════════ */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  const btn=document.getElementById('nav-'+name);
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='archive') renderArchive(currentCatFilter);
+  if(name==='categories') renderCategories();
+  if(name==='bookmarks') renderBookmarks();
+}
+
+/* ═══════════════════════════════════
+   HOME / CARD RENDER
+═══════════════════════════════════ */
+let current = 0;
+let answered = false;
+let currentShareTheme = 'dark';
+
+function getIndexForToday() {
+  const d=new Date();
+  const dayOfYear=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
+  return dayOfYear % concepts.length;
+}
+
+function renderCard(index, animate) {
+  answered=false;
+  const c=concepts[index];
+  const card=document.getElementById('card');
+  if(animate) {
+    card.classList.remove('visible'); card.classList.add('exit');
+    setTimeout(()=>{
+      card.classList.remove('exit'); card.classList.add('enter');
+      card.innerHTML=buildCard(c);
+      card.offsetHeight;
+      card.classList.remove('enter'); card.classList.add('visible');
+      updateProgress();
+    },300);
+  } else {
+    card.innerHTML=buildCard(c);
+    card.classList.add('visible');
+    updateProgress();
+  }
+}
+
+function buildCard(c) {
+  const tags=c.tags.map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
+  const opts=c.quiz.opts.map((o,i)=>{
+    const key=String.fromCharCode(65+i);
+    return `<button class="quiz-opt" onclick="answer(this,${i})" data-index="${i}">
+      <span class="opt-key">${key}</span>${o.replace(' ✓','')}
+    </button>`;
+  }).join('');
+  const isBookmarked=gs.bookmarks.includes(current);
+  const todayIdx=getIndexForToday();
+  const isToday=current===todayIdx;
+
+  return `
+    <div class="card-num">${c.num}</div>
+    <div class="card-actions-top">
+      <button class="icon-btn${isBookmarked?' bookmarked':''}" onclick="toggleBookmark()" title="${isBookmarked?'İşarəni çıxar':'Yadda saxla'}">${isBookmarked?'🔖':'🔖'}</button>
+    </div>
+    <div class="card-tags">${tags}${isToday?'<span class="tag tag-min">🌟 Bu günün dərsi</span>':''}</div>
+    <h2 class="concept-title">${c.title}</h2>
+    <p class="concept-subtitle">${c.subtitle}</p>
+    <div class="divider"></div>
+    <div class="section-label">Açıqlama</div>
+    <p class="explanation">${c.explanation}</p>
+    <div class="divider"></div>
+    <div class="section-label">Nümunə</div>
+    <div class="example-box"><p>${c.example}</p></div>
+    <div class="divider"></div>
+    <div class="section-label">Əsas Fikir</div>
+    <div class="insight-pill">
+      <span class="insight-icon">💡</span>
+      <p class="insight-text">${c.insight}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="section-label">Mini Quiz</div>
+    <div class="quiz-wrap">
+      <p class="quiz-question">${c.quiz.q}</p>
+      <div class="quiz-options">${opts}</div>
+      <div class="quiz-feedback" id="qfeedback"></div>
+    </div>
+    <button class="btn-next" onclick="nextConcept()">
+      <span>Növbəti konsept</span>
+      <svg class="btn-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M12 5l5 5-5 5"/></svg>
+    </button>
+    <button class="btn-share" onclick="openShare()">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><circle cx="15" cy="4" r="1.5"/><circle cx="15" cy="16" r="1.5"/><circle cx="5" cy="10" r="1.5"/><path d="M6.5 9.2l7-4M6.5 10.8l7 4"/></svg>
+      Bu konsepti paylaş
+    </button>
+  `;
+}
+
+function answer(btn, index) {
+  if(answered) return;
+  answered=true;
+  const c=concepts[current];
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.disabled=true);
+  const fb=document.getElementById('qfeedback');
+  if(index===c.quiz.correct) {
+    btn.classList.add('correct');
+    fb.className='quiz-feedback show correct';
+    fb.innerHTML=`✓ <strong>Düzdür!</strong> ${c.quiz.feedback}`;
+    showToast('🎉 Düzgün cavab!');
+    setTimeout(()=>addXP(XP_REWARDS.quiz_correct,'Düzgün cavab'),400);
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt')[c.quiz.correct].classList.add('correct');
+    fb.className='quiz-feedback show wrong';
+    fb.innerHTML=`✗ <strong>Yaxın deyil.</strong> ${c.quiz.wrongFeedback}`;
+    showToast('💡 Düzgün cavabı öyrəndin');
+  }
+  if(!gs.seen.includes(current)) { gs.seen.push(current); saveState(); }
+}
+
+function nextConcept() {
+  current=(current+1)%concepts.length;
+  renderCard(current,true);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(current===0) showToast('🔄 Başa çatdı — yenidən başlayırıq!');
+  setTimeout(()=>addXP(XP_REWARDS.lesson,'Yeni konsept'),1000);
+}
+
+function updateProgress() {
+  document.getElementById('progress').style.width=((current+1)/concepts.length*100)+'%';
+  document.getElementById('footerCount').textContent=`${current+1} / ${concepts.length} konsept`;
+}
+
+function toggleBookmark() {
+  const idx=gs.bookmarks.indexOf(current);
+  if(idx===-1) { gs.bookmarks.push(current); showToast('🔖 Yadda saxlandı!'); }
+  else { gs.bookmarks.splice(idx,1); showToast('Silindi'); }
+  saveState();
+  renderCard(current,false);
+}
+
+/* ═══════════════════════════════════
+   CATEGORIES
+═══════════════════════════════════ */
+function renderCategories() {
+  const grid=document.getElementById('categoriesGrid');
+  const counts={};
+  concepts.forEach(c=>{ counts[c.category]=(counts[c.category]||0)+1; });
+  grid.innerHTML=Object.entries(CATEGORY_META).map(([key,m])=>`
+    <div class="cat-card ${m.cls}" onclick="filterArchive('${key}')">
+      <div class="cat-icon">${m.icon}</div>
+      <div class="cat-name">${m.name}</div>
+      <div class="cat-count">${counts[key]||0} dərs</div>
+      <div class="cat-desc">${m.desc}</div>
+    </div>
+  `).join('');
+}
+
+function filterArchive(cat) {
+  currentCatFilter=cat;
+  showView('archive');
+}
+
+/* ═══════════════════════════════════
+   ARCHIVE
+═══════════════════════════════════ */
+let currentCatFilter = 'all';
+
+function renderArchive(catFilter) {
+  currentCatFilter=catFilter||'all';
+  const filters=document.getElementById('archiveFilters');
+  const grid=document.getElementById('archiveGrid');
+
+  const allCats=[{key:'all',label:'Hamısı'},...Object.entries(CATEGORY_META).map(([k,v])=>({key:k,label:v.name}))];
+  filters.innerHTML=allCats.map(c=>`<button class="filter-btn${currentCatFilter===c.key?' active':''}" onclick="renderArchive('${c.key}')">${c.label}</button>`).join('');
+
+  const filtered=currentCatFilter==='all'?concepts:concepts.filter(c=>c.category===currentCatFilter);
+  document.getElementById('archiveSubtitle').textContent=`${filtered.length} konsept`;
+
+  grid.innerHTML=filtered.map((c,i)=>{
+    const idx=concepts.indexOf(c);
+    const isBookmarked=gs.bookmarks.includes(idx);
+    const tags=c.tags.slice(0,2).map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
+    return `<div class="archive-card${isBookmarked?' is-bookmarked':''}" onclick="goToLesson(${idx})">
+      <div class="archive-num">${c.num}</div>
+      <div class="archive-info">
+        <div class="archive-title">${c.title}</div>
+        <div class="archive-sub">${c.subtitle}</div>
+        <div class="archive-tags">${tags}</div>
+      </div>
+      <div class="archive-bookmark">🔖</div>
+    </div>`;
+  }).join('');
+}
+
+function goToLesson(index) {
+  current=index;
+  showView('home');
+  renderCard(current,false);
+}
+
+/* ═══════════════════════════════════
+   BOOKMARKS
+═══════════════════════════════════ */
+function renderBookmarks() {
+  const container=document.getElementById('bookmarksContainer');
+  if(gs.bookmarks.length===0) {
+    container.innerHTML=`<div class="bookmarks-empty">
+      <div class="be-icon">🔖</div>
+      <h3>Hələ heç nə saxlanmamış</h3>
+      <p>Bəyəndiyiniz dərsin kartında 🔖 düyməsinə basın — burda görünəcək.</p>
+    </div>`;
+    return;
+  }
+  container.innerHTML=`<div class="archive-grid" style="max-width:720px;margin:0 auto;padding:0 24px 80px">`+
+    gs.bookmarks.map(idx=>{
+      const c=concepts[idx];
+      const tags=c.tags.slice(0,2).map(t=>`<span class="tag ${t.cls}">${t.label}</span>`).join('');
+      return `<div class="archive-card is-bookmarked" onclick="goToLesson(${idx})">
+        <div class="archive-num">${c.num}</div>
+        <div class="archive-info">
+          <div class="archive-title">${c.title}</div>
+          <div class="archive-sub">${c.subtitle}</div>
+          <div class="archive-tags">${tags}</div>
+        </div>
+        <div class="archive-bookmark">🔖</div>
+      </div>`;
+    }).join('')+`</div>`;
+}
+
+/* ═══════════════════════════════════
+   SEARCH OVERLAY
+═══════════════════════════════════ */
+function openSearchOverlay() {
+  document.getElementById('searchOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('overlaySearch').focus(),100);
+  handleOverlaySearch('');
+}
+function closeSearchOverlay(e) {
+  if(e&&e.target!==document.getElementById('searchOverlay')) return;
+  document.getElementById('searchOverlay').classList.remove('open');
+}
+function handleOverlaySearch(q) {
+  const list=document.getElementById('searchResultsList');
+  const matches=q.length<2?concepts:concepts.filter(c=>
+    c.title.toLowerCase().includes(q.toLowerCase())||
+    c.subtitle.toLowerCase().includes(q.toLowerCase())||
+    c.explanation.toLowerCase().includes(q.toLowerCase())
+  );
+  if(matches.length===0){
+    list.innerHTML=`<div style="text-align:center;padding:20px;color:var(--ink-3);font-size:.88rem">Heç nə tapılmadı</div>`;
+    return;
+  }
+  list.innerHTML=matches.slice(0,12).map(c=>{
+    const idx=concepts.indexOf(c);
+    return `<div class="search-result-item" onclick="goToLessonFromSearch(${idx})">
+      <div class="sri-num">${c.num}</div>
+      <div class="sri-info">
+        <div class="sri-title">${c.title}</div>
+        <div class="sri-sub">${c.subtitle}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function goToLessonFromSearch(idx) {
+  document.getElementById('searchOverlay').classList.remove('open');
+  current=idx; showView('home'); renderCard(current,false);
+}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+function showXpToast(msg) {
+  const t=document.getElementById('xpToast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+/* ═══════════════════════════════════
+   LEVEL UP MODAL
+═══════════════════════════════════ */
+function showLevelUp(lvlIndex) {
+  const lvl=LEVELS[lvlIndex];
+  const msgs=['','Artıq daha dərin düşünürsən!','Məlumatları analiz etmək sənin üçün ikinci təbiət olur.','Filosof kimi düşünürsən — hər şeyin "niyə"sini axtarırsan.','Müdriklik öyrəndiklərini həyata tətbiq etməkdən gəlir — eləsən!'];
+  document.getElementById('levelupBadge').textContent=lvl.badge;
+  document.getElementById('levelupName').textContent=lvl.name;
+  document.getElementById('levelupSub').textContent=msgs[lvlIndex]||'Öyrənməyə davam et!';
+  document.getElementById('levelupOverlay').classList.add('open');
+}
+function closeLevelup() { document.getElementById('levelupOverlay').classList.remove('open'); }
+
+/* ═══════════════════════════════════
+   SHARE
+═══════════════════════════════════ */
+function openShare() {
+  const c=concepts[current];
+  const plain=c.insight.replace(/<[^>]+>/g,'');
+  document.getElementById('scTitle').textContent=c.title;
+  document.getElementById('scInsight').textContent=plain.substring(0,110)+'…';
+  document.getElementById('scStreak').textContent=`🔥 ${gs.streak} günlük seriya`;
+  document.getElementById('shareOverlay').classList.add('open');
+}
+function closeShare() { document.getElementById('shareOverlay').classList.remove('open'); }
+function setShareTheme(theme,el) {
+  currentShareTheme=theme;
+  document.getElementById('shareCard').className='share-card-preview'+(theme!=='dark'?` theme-${theme}`:'');
+  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+}
+function getShareText() {
+  const c=concepts[current];
+  const plain=c.insight.replace(/<[^>]+>/g,'').substring(0,120);
+  return `📚 Bugün öyrəndim: "${c.title}"\n\n${plain}\n\n🔥 ${gs.streak} günlük seriya\n\nbugunneoyrenimdir.az`;
+}
+function copyShareText() {
+  navigator.clipboard.writeText(getShareText()).then(()=>{showToast('✅ Kopyalandı!');closeShare();}).catch(()=>showToast('📋 Mətni seçib kopyala'));
+}
+function shareWhatsApp() {
+  window.open(`https://wa.me/?text=${encodeURIComponent(getShareText())}`,'_blank');
+  closeShare();
+}
+function shareNative() {
+  const c=concepts[current];
+  if(navigator.share) navigator.share({title:`Bugün öyrəndim: ${c.title}`,text:getShareText(),url:window.location.href}).catch(()=>{});
+  else copyShareText();
+  closeShare();
+}
+
+/* ═══════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════ */
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('overlaySearch')===document.activeElement) return;
+  if(e.key==='ArrowRight'||e.key==='n') nextConcept();
+  if(e.key==='Escape') { closeShare(); closeLevelup(); document.getElementById('searchOverlay').classList.remove('open'); }
+  if(e.key==='/'||e.key==='s') { e.preventDefault(); openSearchOverlay(); }
+  if(e.key>='1'&&e.key<='4') {
+    const opts=document.querySelectorAll('.quiz-opt');
+    if(opts[parseInt(e.key)-1]&&!answered) opts[parseInt(e.key)-1].click();
+  }
+});
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+function init() {
+  const d=new Date();
+  const months=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+
+  checkStreak();
+  updateStreakBar();
+  document.getElementById('footerCount').textContent=`${concepts.length} konsept mövcuddur`;
+
+  current=getIndexForToday();
+  renderCard(current,false);
+
+  setTimeout(()=>addXP(XP_REWARDS.lesson,'Günün dərsini açdın'),1200);
+
+  // PWA
+  initPWA();
+}
+
+/* ═══════════════════════════════════════════════════
+   PWA — SPLASH + ONBOARDING + INSTALL + NOTIFICATIONS
+═══════════════════════════════════════════════════ */
+
+let swRegistration    = null;
+let deferredInstallPrompt = null;
+let newWorkerWaiting  = null;
+let obCurrentStep     = 0;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isInStandaloneMode = () => ('standalone' in window.navigator) && window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+// ── 1. Splash Screen ──────────────────────────────
+function hideSplash() {
+  const splash = document.getElementById('splash');
+  setTimeout(() => {
+    splash.classList.add('hide');
+    setTimeout(() => splash.remove(), 500);
+    // Show onboarding for first-time users
+    if (!localStorage.getItem('ob_done') && !isInStandaloneMode()) {
+      setTimeout(() => document.getElementById('onboardingOverlay').classList.add('open'), 200);
+    }
+  }, 2000);
+}
+
+// ── 2. Onboarding ─────────────────────────────────
+function obNext() {
+  obCurrentStep++;
+  document.getElementById('obSteps').style.transform = `translateX(-${obCurrentStep * 100}%)`;
+  // On install step, check if we can show install button
+  if (obCurrentStep === 1) {
+    const btn = document.getElementById('obInstallBtn');
+    if (!deferredInstallPrompt && !isIOS) {
+      btn.textContent = '⏭ Sonrakı adıma keç';
+      btn.onclick = obNext;
+    } else if (isIOS) {
+      btn.textContent = '📖 Necə yükləmək olar?';
+      btn.onclick = showIOSHint;
+    }
+  }
+}
+
+function obInstall() {
+  if (deferredInstallPrompt) {
+    pwaInstall();
+  } else if (isIOS) {
+    showIOSHint();
+  }
+  setTimeout(() => obNext(), 400);
+}
+
+function obFinish() {
+  document.getElementById('onboardingOverlay').classList.remove('open');
+  localStorage.setItem('ob_done', '1');
+}
+
+// ── 3. Service Worker ─────────────────────────────
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.register('./service-worker.js', { scope: './' });
+    swRegistration = reg;
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing;
+      w.addEventListener('statechange', () => {
+        if (w.state === 'installed' && navigator.serviceWorker.controller) {
+          newWorkerWaiting = w;
+          document.getElementById('updateBanner').classList.add('show');
+        }
+      });
+    });
+    if (reg.active) setTimeout(maybeShowNotifPrompt, 45000);
+  } catch(err) { console.warn('[PWA] SW failed:', err); }
+}
+
+function applyUpdate() {
+  if (!newWorkerWaiting) return;
+  newWorkerWaiting.postMessage({ type: 'SKIP_WAITING' });
+  navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
+}
+
+// ── 4. Install Prompt ─────────────────────────────
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!localStorage.getItem('pwa_dismissed') && !isInStandaloneMode()) {
+    setTimeout(() => document.getElementById('pwaInstallCard').classList.add('show'), 4000);
+  }
+});
+
+async function pwaInstall() {
+  document.getElementById('pwaInstallCard').classList.remove('show');
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    showToast('🎉 Ana ekrana əlavə edildi!');
+    setTimeout(maybeShowNotifPrompt, 2000);
+  }
+  deferredInstallPrompt = null;
+}
+
+function pwaDismiss() {
+  document.getElementById('pwaInstallCard').classList.remove('show');
+  localStorage.setItem('pwa_dismissed', '1');
+}
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  document.getElementById('pwaInstallCard').classList.remove('show');
+  showToast('✅ Tətbiq uğurla yükləndi!');
+});
+
+// ── 5. iOS Install Hint ───────────────────────────
+function showIOSHint() {
+  if (!isIOS || isInStandaloneMode()) return;
+  if (localStorage.getItem('ios_hint_shown')) return;
+  document.getElementById('iosHint').classList.add('show');
+  document.getElementById('iosArrow').classList.add('show');
+  localStorage.setItem('ios_hint_shown', '1');
+}
+
+// ── 6. Notifications ──────────────────────────────
+function maybeShowNotifPrompt() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'default') return;
+  if (localStorage.getItem('notif_asked')) return;
+  document.getElementById('notifPrompt').classList.add('show');
+}
+
+async function requestNotifPermission() {
+  dismissNotifPrompt();
+  localStorage.setItem('notif_asked', '1');
+  if (!('Notification' in window)) { showToast('❌ Bu cihazda bildiriş dəstəklənmir'); return; }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    showToast('🔔 Bildirişlər aktivdir!');
+    scheduleDailyNotification();
+    setTimeout(() => {
+      new Notification('Bugün nə öyrənim? 📚', {
+        body: 'Mükəmməl! Hər gün saat 09:00-da xatırlatma alacaqsınız.',
+        icon: 'icons/icon-192.png', tag: 'welcome'
+      });
+    }, 800);
+  } else { showToast('Bildirişlər açılmadı — Ayarlardan dəyişdirə bilərsiniz'); }
+}
+
+function dismissNotifPrompt() {
+  document.getElementById('notifPrompt').classList.remove('show');
+  localStorage.setItem('notif_asked', '1');
+}
+
+function scheduleDailyNotification() {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(9, 0, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  setTimeout(() => {
+    if (Notification.permission === 'granted') {
+      const lesson = concepts[getIndexForToday()];
+      new Notification('Bugün nə öyrənim? 📚', {
+        body: `"${lesson.title}" — ${lesson.subtitle}`,
+        icon: 'icons/icon-192.png', tag: 'daily', renotify: true
+      });
+    }
+    setInterval(() => {
+      if (Notification.permission === 'granted') {
+        const lesson = concepts[getIndexForToday()];
+        new Notification('Bugün nə öyrənim? 📚', {
+          body: `"${lesson.title}" — ${lesson.subtitle}`,
+          icon: 'icons/icon-192.png', tag: 'daily', renotify: true
+        });
+      }
+    }, 86400000);
+  }, next - now);
+}
+
+// ── 7. Connectivity ───────────────────────────────
+function setupConnectivity() {
+  window.addEventListener('offline', () => showToast('📴 Offline — kontent cache-dən yüklənir'));
+  window.addEventListener('online',  () => showToast('✅ Yenidən onlayn'));
+}
+
+// ── 8. Startup URL handling ───────────────────────
+function handleStartupURL() {
+  const v = new URLSearchParams(window.location.search).get('view');
+  if (v && ['archive','categories','bookmarks','premium'].includes(v))
+    setTimeout(() => showView(v), 100);
+}
+
+// ── 9. Init PWA ───────────────────────────────────
+function initPWA() {
+  hideSplash();
+  registerSW();
+  setupConnectivity();
+  handleStartupURL();
+  // iOS: show hint after 8 seconds if not installed
+  if (isIOS && !isInStandaloneMode() && !localStorage.getItem('ios_hint_shown')) {
+    setTimeout(showIOSHint, 8000);
+  }
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    scheduleDailyNotification();
+  }
+}
+
+/* ═══════════════════════════════════
+   BILLING TOGGLE
+═══════════════════════════════════ */
+let billingMode = 'monthly';
+function setBilling(mode) {
+  billingMode = mode;
+  document.getElementById('toggleMonthly').classList.toggle('active', mode==='monthly');
+  document.getElementById('toggleAnnual').classList.toggle('active', mode==='annual');
+  document.getElementById('proPrice').textContent = mode==='annual' ? '₼3.6' : '₼6';
+  document.getElementById('proAnnualNote').style.visibility = mode==='annual' ? 'visible' : 'hidden';
+  document.getElementById('proAnnualNote').textContent = mode==='annual' ? 'İllik ödənişdə ₼43.2/il qənaət' : '–';
+}
+
+init();
+</script>
+</body>
+</html>

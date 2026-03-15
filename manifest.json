@@ -1,0 +1,81 @@
+{
+  "name": "Bugün nə öyrənim?",
+  "short_name": "BNÖ",
+  "description": "Hər gün 2-3 dəqiqəyə bir konsept öyrən. İqtisadiyyat, psixologiya, tarix, texnologiya.",
+  "start_url": "/index.html?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F4EE",
+  "theme_color": "#E07B39",
+  "lang": "az",
+  "categories": ["education", "lifestyle"],
+  "screenshots": [],
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Günün dərsi",
+      "short_name": "Bu gün",
+      "description": "Bugünkü konsepti aç",
+      "url": "/index.html?view=home&source=shortcut",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Arxiv",
+      "short_name": "Arxiv",
+      "description": "Bütün dərslərə bax",
+      "url": "/index.html?view=archive&source=shortcut",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
