@@ -687,22 +687,24 @@ footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; al
 }
 .pwa-dismiss-btn:hover { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.8); }
 
-/* iOS install instructions */
+/* iOS / Android install hint (bottom sheet) */
 .ios-hint {
-  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120px);
-  z-index: 700; width: calc(100% - 32px); max-width: 380px;
-  background: var(--ink); color: #f5f0e8; border-radius: 20px;
-  padding: 20px; box-shadow: 0 8px 40px rgba(0,0,0,.28);
-  transition: transform .45s var(--ease-out); text-align: center;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 750;
+  background: #1C1917; color: #f5f0e8;
+  border-radius: 24px 24px 0 0; padding: 20px 22px 36px;
+  box-shadow: 0 -8px 40px rgba(0,0,0,.35);
+  transform: translateY(110%); transition: transform .4s var(--ease-out);
 }
-.ios-hint.show { transform: translateX(-50%) translateY(0); }
-.ios-hint h4 { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
-.ios-hint p { font-size: .82rem; opacity: .7; line-height: 1.6; margin-bottom: 16px; }
-.ios-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; text-align: left; }
-.ios-step { display: flex; align-items: center; gap: 10px; font-size: .82rem; opacity: .8; }
-.ios-step-icon { font-size: 1.1rem; flex-shrink: 0; }
-.ios-hint-close { padding: 10px 24px; border-radius: 100px; border: 1px solid rgba(255,255,255,.2); font-size: .82rem; color: rgba(255,255,255,.6); transition: all .2s; }
-.ios-hint-close:hover { border-color: rgba(255,255,255,.5); color: #fff; }
+.ios-hint.show { transform: translateY(0); }
+.ios-hint-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.ios-hint h4 { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; }
+.ios-hint-x { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.12); border: none; color: rgba(255,255,255,.8); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ios-hint p { font-size: .82rem; opacity: .65; line-height: 1.55; margin-bottom: 14px; }
+.ios-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 0; }
+.ios-step { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.07); border-radius: 10px; padding: 10px 14px; }
+.ios-step-icon { font-size: 1.2rem; flex-shrink: 0; }
+.ios-step span { font-size: .82rem; opacity: .85; }
+.ios-hint-close { display: none; }
 
 /* Arrow pointing down for iOS */
 .ios-arrow {
@@ -1188,14 +1190,16 @@ footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; al
 
 <!-- iOS INSTALL HINT -->
 <div class="ios-hint" id="iosHint">
-  <h4>Ana ekrana əlavə et 📱</h4>
+  <div class="ios-hint-header">
+    <h4>Ana ekrana əlavə et 📱</h4>
+    <button class="ios-hint-x" onclick="closeIOSHint()">✕</button>
+  </div>
   <p>Bu saytı telefona yüklə — internet olmadan da işləyir, sanki real app-dır.</p>
   <div class="ios-steps">
-    <div class="ios-step"><span class="ios-step-icon">⬆️</span><span>Aşağıdakı paylaşma düyməsinə bas</span></div>
-    <div class="ios-step"><span class="ios-step-icon">➕</span><span>"Ana Ekrana Əlavə Et" seçimini tap</span></div>
-    <div class="ios-step"><span class="ios-step-icon">✅</span><span>"Əlavə Et" düyməsinə bas</span></div>
+    <div class="ios-step"><span class="ios-step-icon">⬆️</span><span>Aşağıdakı <strong>paylaşma</strong> düyməsinə bas</span></div>
+    <div class="ios-step"><span class="ios-step-icon">➕</span><span><strong>"Ana Ekrana Əlavə Et"</strong> seçimini tap</span></div>
+    <div class="ios-step"><span class="ios-step-icon">✅</span><span><strong>"Əlavə Et"</strong> düyməsinə bas — hazır!</span></div>
   </div>
-  <button class="ios-hint-close" onclick="document.getElementById('iosHint').classList.remove('show');document.getElementById('iosArrow').classList.remove('show')">Anladım</button>
 </div>
 <div class="ios-arrow" id="iosArrow">👇</div>
 
@@ -2258,11 +2262,16 @@ window.addEventListener('appinstalled', () => {
 
 // ── 5. iOS Install Hint ───────────────────────────
 function showIOSHint() {
-  if (!isIOS || isInStandaloneMode()) return;
-  if (localStorage.getItem('ios_hint_shown')) return;
+  // ONLY show on real iOS Safari, never on Android
+  if (!isIOS) return;
+  if (isInStandaloneMode()) return;
   document.getElementById('iosHint').classList.add('show');
-  document.getElementById('iosArrow').classList.add('show');
   localStorage.setItem('ios_hint_shown', '1');
+}
+
+function closeIOSHint() {
+  document.getElementById('iosHint').classList.remove('show');
+  document.getElementById('iosArrow').classList.remove('show');
 }
 
 // ── 6. Notifications ──────────────────────────────
@@ -2339,9 +2348,9 @@ function initPWA() {
   registerSW();
   setupConnectivity();
   handleStartupURL();
-  // iOS: show hint after 8 seconds if not installed
-  if (isIOS && !isInStandaloneMode() && !localStorage.getItem('ios_hint_shown')) {
-    setTimeout(showIOSHint, 8000);
+  // iOS only: show hint after 6s if not installed
+  if (isIOS && !isInStandaloneMode()) {
+    setTimeout(showIOSHint, 6000);
   }
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     scheduleDailyNotification();
