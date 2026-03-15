@@ -651,6 +651,7 @@ footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; al
   background: var(--ink); color: #f5f0e8; border-radius: 20px;
   padding: 20px; box-shadow: 0 8px 40px rgba(0,0,0,.28);
   transition: transform .45s var(--ease-out);
+  position: fixed; /* keep fixed, use relative for inner */
 }
 .pwa-install-card.show { transform: translateX(-50%) translateY(0); }
 .pwa-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
@@ -1070,7 +1071,8 @@ footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; al
 
 <!-- ONBOARDING SHEET (first-time users) -->
 <div class="onboarding-overlay" id="onboardingOverlay">
-  <div class="onboarding-sheet">
+  <div class="onboarding-sheet" style="position:relative">
+    <button onclick="obFinish()" style="position:absolute;top:16px;right:16px;z-index:10;width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--border);font-size:1rem;color:var(--ink-2);display:flex;align-items:center;justify-content:center;cursor:pointer;">✕</button>
     <div class="ob-handle"></div>
     <div class="ob-steps" id="obSteps">
 
@@ -1159,6 +1161,7 @@ footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; al
 
 <!-- PWA INSTALL CARD (Android/Desktop) -->
 <div class="pwa-install-card" id="pwaInstallCard">
+  <button onclick="pwaDismiss()" style="position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:rgba(255,255,255,0.7);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
   <div class="pwa-card-top">
     <div class="pwa-card-app-icon">B</div>
     <div class="pwa-card-info">
@@ -1172,18 +1175,15 @@ footer { border-top:1px solid var(--border); padding:28px 40px; display:flex; al
       <span>Sayta daxil oldun</span>
     </div>
     <div class="pwa-card-step">
-      <div class="pwa-step-num">2</div>
-      <span>Aşağıdakı düyməyə bas</span>
+      <div class="pwa-step-num" id="installStep2Num">2</div>
+      <span id="installStep2Text">Aşağıdakı düyməyə bas</span>
     </div>
     <div class="pwa-card-step">
       <div class="pwa-step-num">3</div>
       <span>Ana ekranda görünəcək!</span>
     </div>
   </div>
-  <div class="pwa-card-btns">
-    <button class="pwa-install-btn" onclick="pwaInstall()">📲 Yüklə — pulsuz</button>
-    <button class="pwa-dismiss-btn" onclick="pwaDismiss()">✕</button>
-  </div>
+  <button class="pwa-install-btn" id="mainInstallBtn" onclick="pwaInstall()">📲 Tətbiqi yüklə — pulsuz</button>
 </div>
 
 <!-- iOS INSTALL HINT -->
@@ -2202,21 +2202,47 @@ function applyUpdate() {
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstallPrompt = e;
+  console.log('[PWA] Install prompt captured ✓');
+  // Update button text to show it's ready
+  const btn = document.getElementById('mainInstallBtn');
+  if (btn) btn.textContent = '📲 Tətbiqi yüklə — pulsuz';
+  // Show card after 4 seconds if not dismissed and not already installed
   if (!localStorage.getItem('pwa_dismissed') && !isInStandaloneMode()) {
-    setTimeout(() => document.getElementById('pwaInstallCard').classList.add('show'), 4000);
+    setTimeout(() => {
+      document.getElementById('pwaInstallCard').classList.add('show');
+    }, 4000);
   }
 });
 
 async function pwaInstall() {
-  document.getElementById('pwaInstallCard').classList.remove('show');
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  const { outcome } = await deferredInstallPrompt.userChoice;
-  if (outcome === 'accepted') {
-    showToast('🎉 Ana ekrana əlavə edildi!');
-    setTimeout(maybeShowNotifPrompt, 2000);
+  // Android Chrome: use deferred prompt
+  if (deferredInstallPrompt) {
+    document.getElementById('pwaInstallCard').classList.remove('show');
+    try {
+      await deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      console.log('[PWA] User choice:', outcome);
+      if (outcome === 'accepted') {
+        showToast('🎉 Ana ekrana əlavə edildi!');
+        setTimeout(maybeShowNotifPrompt, 2000);
+      } else {
+        showToast('İstəsən sonra da yükləyə bilərsən');
+      }
+    } catch(err) {
+      console.warn('[PWA] Install error:', err);
+      showToast('Yükləmə alınmadı, yenidən cəhd et');
+    }
+    deferredInstallPrompt = null;
+    return;
   }
-  deferredInstallPrompt = null;
+  // iOS Safari: show manual instructions
+  if (isIOS) {
+    document.getElementById('pwaInstallCard').classList.remove('show');
+    showIOSHint();
+    return;
+  }
+  // Fallback: browser doesn't support auto-install
+  showToast('Chrome brauzeri ilə açıb yükləyə bilərsən');
 }
 
 function pwaDismiss() {
